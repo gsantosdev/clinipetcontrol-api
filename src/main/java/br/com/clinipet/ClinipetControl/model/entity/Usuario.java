@@ -10,7 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
 
 @Entity
@@ -25,8 +24,6 @@ public class Usuario {
     private Long id;
 
     private String nome;
-
-    private String email;
 
     @JsonIgnore
     private String senha;
