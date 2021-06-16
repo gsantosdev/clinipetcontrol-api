@@ -12,4 +12,5 @@ public interface AnimalRepository extends JpaRepository<Animal, Long> {
 
     Optional<List<Animal>> findByNome(String nome);
 
+
 }
