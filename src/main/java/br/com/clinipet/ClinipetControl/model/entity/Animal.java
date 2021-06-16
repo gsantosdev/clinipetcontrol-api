@@ -1,21 +1,24 @@
 package br.com.clinipet.ClinipetControl.model.entity;
 
-import br.com.clinipet.ClinipetControl.model.enums.TipoAnimal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
-import javax.persistence.*;
-import java.sql.Date;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-
+@Table(name = "animal")
 public class Animal {
 
     @Id
@@ -24,15 +27,14 @@ public class Animal {
 
     private String nome;
 
-    @Column(name = "data_nascimento")
-    @Convert(converter = Jsr310JpaConverters.LocalDateConverter.class) //Converter para tipo de data que o banco suporte
-    private Date dataNascimento;
+    private Integer ano;
+
+    private Integer mes;
 
     private String cor;
 
-    @Enumerated(value = EnumType.STRING)
-    private TipoAnimal tipo;
 
+    private String tipo;
     @ManyToOne
     @JoinColumn(name="id_cliente")
     private Cliente cliente;
