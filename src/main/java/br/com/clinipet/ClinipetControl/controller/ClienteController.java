@@ -1,16 +1,11 @@
 package br.com.clinipet.ClinipetControl.controller;
 
-import br.com.clinipet.ClinipetControl.controller.dto.UsuarioDTO;
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Animal;
 import br.com.clinipet.ClinipetControl.model.entity.Cliente;
-import br.com.clinipet.ClinipetControl.model.entity.Usuario;
-import br.com.clinipet.ClinipetControl.service.AnimalService;
 import br.com.clinipet.ClinipetControl.service.ClienteService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
