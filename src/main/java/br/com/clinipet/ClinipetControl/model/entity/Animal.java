@@ -1,12 +1,12 @@
 package br.com.clinipet.ClinipetControl.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
 
 
 @Entity
@@ -31,13 +32,26 @@ public class Animal {
 
     private String nome;
 
-    private Integer ano;
+    private String sexo;
 
-    private Integer mes;
+    private String idade;
+
+    private String raca;
+
+    private String tipo;
 
     private String cor;
 
-    private String tipo;
+    private String peso;
+
+    @Nullable
+    private String alergias;
+
+    @Nullable
+    private String patologias;
+
+    @Nullable
+    private String medicamentos;
 
     @JsonIgnoreProperties("animal")
     @ManyToOne

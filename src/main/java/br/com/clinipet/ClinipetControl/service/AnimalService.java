@@ -4,8 +4,6 @@ import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Animal;
 import br.com.clinipet.ClinipetControl.model.repository.AnimalRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -55,25 +53,11 @@ public class AnimalService {
 
     public void validar(Animal animal) {
 
-        if (animal.getNome() == null || animal.getNome().trim().equals("")) {
+        if ( animal.getNome().trim().equals("")) {
             throw new RegraNegocioException("Informe um nome válido.");
         }
 
-        if (animal.getMes() == null || animal.getMes() < 1 || animal.getMes() > 12) {
-            throw new RegraNegocioException("Informe um Mês válido.");
-        }
-
-        if (animal.getAno() == null || animal.getAno().toString().length() != 4) {
-            throw new RegraNegocioException("Informe um Ano válido.");
-        }
-
-        if (animal.getCor() == null || animal.getCor().trim().equals("")) {
-            throw new RegraNegocioException("Informe uma cor válida.");
-        }
-
-        if (animal.getCliente() == null || animal.getCliente().getId() == null) {
-            throw new RegraNegocioException("Informe um cliente.");
-        }
+        //TODO Aumentar validações
 
     }
 }

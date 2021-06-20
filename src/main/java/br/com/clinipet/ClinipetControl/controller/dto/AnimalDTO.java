@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.lang.Nullable;
 
 
 @Getter
@@ -18,13 +19,26 @@ public class AnimalDTO {
 
     private String nome;
 
-    private Integer ano;
+    private String sexo;
 
-    private Integer mes;
+    private String idade;
+
+    private String raca;
+
+    private String tipo;
 
     private String cor;
 
-    private String tipo;
+    private String peso;
+
+    @Nullable
+    private String alergias;
+
+    @Nullable
+    private String patologias;
+
+    @Nullable
+    private String medicamentos;
 
     private Long idCliente;
 

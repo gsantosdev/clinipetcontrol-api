@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -106,10 +107,15 @@ public class AnimalController {
         Animal animal = new Animal();
 
         animal.setNome(animalDTO.getNome());
-        animal.setAno(animalDTO.getAno());
-        animal.setMes(animalDTO.getMes());
+        animal.setSexo(animalDTO.getSexo());
+        animal.setIdade(animalDTO.getIdade());
+        animal.setRaca(animalDTO.getRaca());
         animal.setCor(animalDTO.getCor());
         animal.setTipo(animalDTO.getTipo());
+        animal.setPeso(animalDTO.getPeso());
+        animal.setAlergias(animalDTO.getAlergias());
+        animal.setPatologias(animalDTO.getPatologias());
+        animal.setMedicamentos(animalDTO.getMedicamentos());
 
 
         Cliente cliente = clienteService.obterPorId(animalDTO.getIdCliente()).orElseThrow(() -> new RegraNegocioException("Cliente não encontrado!"));
