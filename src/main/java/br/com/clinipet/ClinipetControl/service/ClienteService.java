@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -24,7 +25,18 @@ public class ClienteService {
     @Transactional
     public Cliente cadastrar(Cliente cliente) {
         validar(cliente);
-        return clienteRepository.save(cliente);
+        try {
+            return clienteRepository.save(cliente);
+        } catch (Exception e) {
+            if (e.getCause() != null && e.getCause().getCause() instanceof SQLIntegrityConstraintViolationException) {
+                throw new RegraNegocioException("CPF já cadastrado");
+            }
+            e.printStackTrace();
+            return null;
+
+        }
+
+
     }
 
     public Optional<Cliente> obterPorId(Long id) {
@@ -76,10 +88,6 @@ public class ClienteService {
 
         if (cliente.getCep() == null || cliente.getCep().trim().equals("")) {
             throw new RegraNegocioException("Informe um CEP válido.");
-        }
-
-        if (cliente.getRg() == null || cliente.getRg().trim().equals("")) {
-            throw new RegraNegocioException("Informe um RG válido.");
         }
 
         if (cliente.getTelefone() == null || cliente.getTelefone().trim().equals("")) {
