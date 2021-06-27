@@ -34,8 +34,8 @@ public class Agendamento {
     private Time duracaoAprox;
 
     @ManyToOne
-    @JoinColumn(name = "idCliente")
-    private Cliente cliente;
+    @JoinColumn(name = "idServico")
+    private Servico servico;
 
     @ManyToOne
     @JoinColumn(name = "idAnimal")

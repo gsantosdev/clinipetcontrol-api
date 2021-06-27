@@ -25,11 +25,11 @@ public class AnimalDTO {
 
     private String raca;
 
-    private String tipo;
+    private String especie;
 
     private String cor;
 
-    private String peso;
+    private String porte;
 
     @Nullable
     private String alergias;

@@ -39,6 +39,10 @@ public class ClienteService {
 
     }
 
+    public Optional<List<Cliente>> obterClientePorNomeCpfTelefone(String busca){
+        return clienteRepository.findByNomeOrTelefoneOrCpf(busca);
+    }
+
     public Optional<Cliente> obterPorId(Long id) {
         return clienteRepository.findById(id);
     }

@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.Entity;
@@ -15,7 +14,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
 
 
 @Entity
@@ -38,11 +36,11 @@ public class Animal {
 
     private String raca;
 
-    private String tipo;
+    private String especie;
+
+    private String porte;
 
     private String cor;
-
-    private String peso;
 
     @Nullable
     private String alergias;

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.SQLException;
@@ -53,6 +54,18 @@ public class ClienteController {
             }
 
         }).orElseGet(() -> new ResponseEntity("Cliente não encontrado!", HttpStatus.BAD_REQUEST));
+    }
+
+
+    @GetMapping
+    public ResponseEntity obterPorNomeTelefoneCpf(@RequestParam String busca){
+        Optional<List<Cliente>> cliente = clienteService.obterClientePorNomeCpfTelefone(busca);
+
+        if(cliente.isEmpty()){
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(cliente);
+
     }
 
     @GetMapping("/{id}")

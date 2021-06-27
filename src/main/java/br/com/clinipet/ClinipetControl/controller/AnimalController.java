@@ -109,8 +109,8 @@ public class AnimalController {
         animal.setIdade(animalDTO.getIdade());
         animal.setRaca(animalDTO.getRaca());
         animal.setCor(animalDTO.getCor());
-        animal.setTipo(animalDTO.getTipo());
-        animal.setPeso(animalDTO.getPeso());
+        animal.setEspecie(animalDTO.getEspecie());
+        animal.setPorte(animalDTO.getPorte());
         animal.setAlergias(animalDTO.getAlergias());
         animal.setPatologias(animalDTO.getPatologias());
         animal.setMedicamentos(animalDTO.getMedicamentos());
