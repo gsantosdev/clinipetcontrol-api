@@ -68,6 +68,16 @@ public class ClienteController {
 
     }
 
+    @GetMapping("/listar")
+    public ResponseEntity listarAnimais() {
+        List<Cliente> clientes = clienteService.listarClientes();
+        if (clientes.isEmpty()) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(clientes);
+
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity obterPorId(@PathVariable("id") Long id) {
         Optional<Cliente> cliente = clienteService.obterPorId(id);
