@@ -69,7 +69,7 @@ public class ClienteController {
     }
 
     @GetMapping("/listar")
-    public ResponseEntity listarAnimais() {
+    public ResponseEntity listarClientes() {
         List<Cliente> clientes = clienteService.listarClientes();
         if (clientes.isEmpty()) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);

@@ -36,7 +36,6 @@ public class ClienteService {
 
         }
 
-
     }
 
     public Optional<List<Cliente>> obterClientePorNomeCpfTelefone(String busca){
@@ -51,7 +50,16 @@ public class ClienteService {
     public Cliente atualizar(Cliente cliente) {
         Objects.requireNonNull(cliente.getId());
         validar(cliente);
-        return clienteRepository.save(cliente);
+        try {
+            return clienteRepository.save(cliente);
+        } catch (Exception e) {
+            if (e.getCause() != null && e.getCause().getCause() instanceof SQLIntegrityConstraintViolationException) {
+                throw new RegraNegocioException("CPF já cadastrado");
+            }
+            e.printStackTrace();
+            return null;
+
+        }
     }
 
     @Transactional
