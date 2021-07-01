@@ -38,6 +38,7 @@ public class ClienteService {
 
     }
 
+
     public Optional<List<Cliente>> obterClientePorNomeCpfTelefone(String busca){
         return clienteRepository.findByNomeOrTelefoneOrCpf(busca);
     }
@@ -62,12 +63,12 @@ public class ClienteService {
         }
     }
 
-    @Transactional
+
     public List<Cliente> listarClientes() {
         return clienteRepository.findAll();
     }
 
-    @Transactional
+
     public List<Animal> obterAnimais(Cliente cliente) {
         List<Animal> animais = cliente.getAnimais();
         if (animais.isEmpty()) {

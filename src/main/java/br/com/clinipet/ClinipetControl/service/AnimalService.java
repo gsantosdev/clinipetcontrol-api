@@ -36,7 +36,6 @@ public class AnimalService {
         repository.delete(animal);
     }
 
-    @Transactional
     public List<Animal> listarAnimais() {
         return repository.findAll();
     }
