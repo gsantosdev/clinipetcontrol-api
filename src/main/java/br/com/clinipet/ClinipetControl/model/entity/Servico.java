@@ -28,6 +28,8 @@ public class Servico {
 
     private String nome;
 
-    private TipoFuncionario tipoFuncionario;
+    private String observacoes;
+
+
 
 }
