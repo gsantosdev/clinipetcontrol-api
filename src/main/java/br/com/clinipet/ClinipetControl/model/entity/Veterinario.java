@@ -27,6 +27,4 @@ public class Veterinario {
 
     private String nome;
 
-    private String cpf;
-
 }
