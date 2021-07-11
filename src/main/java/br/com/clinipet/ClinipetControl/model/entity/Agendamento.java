@@ -42,8 +42,8 @@ public class Agendamento {
     private Animal animal;
 
     @ManyToOne
-    @JoinColumn(name = "idVeterinario")
-    private Veterinario veterinario;
+    @JoinColumn(name = "idFuncionario")
+    private Funcionario funcionario;
 
 
 

@@ -17,14 +17,22 @@ import javax.persistence.Table;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "Veterinario")
+@Table(name = "Funcionario")
 
-public class Veterinario {
+public class Funcionario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String nome;
+
+    private String telefone;
+
+    private String email;
+
+    private String sexo;
+
+    private Boolean veterinario;
 
 }

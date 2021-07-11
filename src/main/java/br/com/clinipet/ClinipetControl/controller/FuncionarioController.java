@@ -1,9 +1,10 @@
-package br.com.clinipet.ClinipetControl.model.entity;
+package br.com.clinipet.ClinipetControl.controller;
 
 
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
+import br.com.clinipet.ClinipetControl.model.entity.Funcionario;
 import br.com.clinipet.ClinipetControl.service.EspecieService;
-import br.com.clinipet.ClinipetControl.service.VeterinarioService;
+import br.com.clinipet.ClinipetControl.service.FuncionarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,30 +21,30 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/veterinarios")
+@RequestMapping("/api/funcionarios")
 @RequiredArgsConstructor
-public class VeterinarioController {
+public class FuncionarioController {
 
-    private final VeterinarioService veterinarioService;
+    private final FuncionarioService funcionarioService;
 
     @PostMapping
-    public ResponseEntity cadastrar(@RequestBody Veterinario veterinario) {
+    public ResponseEntity cadastrar(@RequestBody Funcionario funcionario) {
         try {
-            Veterinario veterinarioSalvo = veterinarioService.cadastrar(veterinario);
-            return new ResponseEntity(veterinarioSalvo, HttpStatus.CREATED);
+            Funcionario funcionarioSalvo = funcionarioService.cadastrar(funcionario);
+            return new ResponseEntity(funcionarioSalvo, HttpStatus.CREATED);
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody Veterinario veterinario) {
+    public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody Funcionario funcionario) {
 
-        return veterinarioService.obterPorId(id).map(entity -> {
+        return funcionarioService.obterPorId(id).map(entity -> {
             try {
-                veterinario.setId(entity.getId());
-                veterinarioService.atualizar(veterinario);
-                return ResponseEntity.ok(veterinario);
+                funcionario.setId(entity.getId());
+                funcionarioService.atualizar(funcionario);
+                return ResponseEntity.ok(funcionario);
             } catch (RegraNegocioException e) {
                 return ResponseEntity.badRequest().body(e.getMessage());
             }
@@ -53,28 +54,28 @@ public class VeterinarioController {
 
     @GetMapping("/{id}")
     public ResponseEntity obterPorId(@PathVariable("id") Long id) {
-        Optional<Veterinario> veterinario = veterinarioService.obterPorId(id);
+        Optional<Funcionario> funcionario = funcionarioService.obterPorId(id);
 
-        if (veterinario.isEmpty()) {
+        if (funcionario.isEmpty()) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
-        return ResponseEntity.ok(veterinario);
+        return ResponseEntity.ok(funcionario);
     }
 
     @GetMapping("/listar")
     public ResponseEntity listar() {
-        List<Veterinario> veterinario = veterinarioService.listarVeterinarios();
-        if (veterinario.isEmpty()) {
+        List<Funcionario> funcionario = funcionarioService.listarFuncionarios();
+        if (funcionario.isEmpty()) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
-        return ResponseEntity.ok(veterinario);
+        return ResponseEntity.ok(funcionario);
 
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity deletar(@PathVariable("id") Long id) {
-        return veterinarioService.obterPorId(id).map(entity -> {
-            veterinarioService.deletar(entity);
+        return funcionarioService.obterPorId(id).map(entity -> {
+            funcionarioService.deletar(entity);
             return new ResponseEntity(HttpStatus.NO_CONTENT);
 
         }).orElseGet(() -> new ResponseEntity("Espécie não encontrada!", HttpStatus.BAD_REQUEST));
