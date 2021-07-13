@@ -69,7 +69,6 @@ public class EspecieController {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(especies);
-
     }
 
     @DeleteMapping("/{id}")
