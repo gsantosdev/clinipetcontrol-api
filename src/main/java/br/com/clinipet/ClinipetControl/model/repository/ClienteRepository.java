@@ -13,6 +13,6 @@ import java.util.Optional;
 public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
 
-    @Query(value = "SELECT * FROM Cliente WHERE nome LIKE :busca OR cpf LIKE :busca OR telefone LIKE :busca", nativeQuery = true)
+    @Query(value = "SELECT * FROM Cliente WHERE nome LIKE CONCAT('%', :busca, '%') OR cpf LIKE CONCAT('%', :busca, '%') OR telefone LIKE CONCAT('%', :busca, '%')", nativeQuery = true)
     Optional<List<Cliente>> findByNomeOrTelefoneOrCpf(@Param("busca") String busca);
 }

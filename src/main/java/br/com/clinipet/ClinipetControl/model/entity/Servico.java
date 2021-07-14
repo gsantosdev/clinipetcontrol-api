@@ -30,6 +30,4 @@ public class Servico {
 
     private String observacoes;
 
-
-
 }

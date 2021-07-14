@@ -3,7 +3,6 @@ package br.com.clinipet.ClinipetControl.controller;
 
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Funcionario;
-import br.com.clinipet.ClinipetControl.service.EspecieService;
 import br.com.clinipet.ClinipetControl.service.FuncionarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -65,6 +65,18 @@ public class FuncionarioController {
     @GetMapping("/listar")
     public ResponseEntity listar() {
         List<Funcionario> funcionario = funcionarioService.listarFuncionarios();
+        if (funcionario.isEmpty()) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(funcionario);
+
+    }
+
+
+    @GetMapping
+    public ResponseEntity obterPorNomeTelefoneCpf(@RequestParam String busca) {
+        Optional<List<Funcionario>> funcionario = funcionarioService.obterFuncionarioPorNomeTelefone(busca);
+
         if (funcionario.isEmpty()) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
