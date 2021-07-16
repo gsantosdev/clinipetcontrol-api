@@ -12,8 +12,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.sql.Time;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Data
@@ -27,11 +29,12 @@ public class Agendamento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDateTime data;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dataHorario;
 
     private String observacoes;
 
-    private Time duracaoAprox;
+    private Long duracaoAprox;
 
     @ManyToOne
     @JoinColumn(name = "idServico")
@@ -44,8 +47,5 @@ public class Agendamento {
     @ManyToOne
     @JoinColumn(name = "idFuncionario")
     private Funcionario funcionario;
-
-
-
 
 }
