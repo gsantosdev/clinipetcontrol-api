@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -70,9 +71,9 @@ public class AnimalController {
         return ResponseEntity.ok(animal);
     }
 
-    @GetMapping("/nome/{nome}")
-    public ResponseEntity obterPorNome(@PathVariable("nome") String nome) {
-        List<Animal> animal = animalService.obterPorNome(nome);
+    @GetMapping
+    public ResponseEntity obterPorNome(@RequestParam("busca") String busca) {
+        List<Animal> animal = animalService.obterPorNome(busca);
 
         if (animal.isEmpty()) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
@@ -90,7 +91,7 @@ public class AnimalController {
         }).orElseGet(() -> new ResponseEntity("Animal não encontrado!", HttpStatus.BAD_REQUEST));
     }
 
-    @GetMapping
+    @GetMapping("/listar")
     public ResponseEntity listarAnimais() {
         List<Animal> animais = animalService.listarAnimais();
         if (animais.isEmpty()) {

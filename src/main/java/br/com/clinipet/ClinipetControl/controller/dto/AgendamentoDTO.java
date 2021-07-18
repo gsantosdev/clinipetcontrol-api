@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -20,7 +19,7 @@ public class AgendamentoDTO {
 
     private String observacoes;
 
-    private Long duracaoAprox;
+    private String duracaoAprox;
 
     private Long idServico;
 

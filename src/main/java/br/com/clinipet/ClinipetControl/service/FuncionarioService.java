@@ -1,8 +1,5 @@
 package br.com.clinipet.ClinipetControl.service;
 
-import br.com.clinipet.ClinipetControl.model.entity.Animal;
-import br.com.clinipet.ClinipetControl.model.entity.Cliente;
-import br.com.clinipet.ClinipetControl.model.entity.Especie;
 import br.com.clinipet.ClinipetControl.model.entity.Funcionario;
 import br.com.clinipet.ClinipetControl.model.repository.FuncionarioRepository;
 import lombok.RequiredArgsConstructor;

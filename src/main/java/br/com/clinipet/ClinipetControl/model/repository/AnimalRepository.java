@@ -12,8 +12,8 @@ import java.util.Optional;
 @Repository
 public interface AnimalRepository extends JpaRepository<Animal, Long> {
 
-    @Query(value = "SELECT * FROM Animal WHERE nome LIKE :nome", nativeQuery = true)
-    Optional<List<Animal>> findByNome(@Param("nome") String nome);
+    @Query(value = "SELECT * FROM Animal WHERE nome LIKE CONCAT('%', :busca, '%')", nativeQuery = true)
+    Optional<List<Animal>> findByNome(@Param("busca") String busca);
 
 
 }

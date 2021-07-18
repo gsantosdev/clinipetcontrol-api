@@ -14,7 +14,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import java.sql.Time;
 import java.util.Date;
 
 @Entity
@@ -34,7 +33,7 @@ public class Agendamento {
 
     private String observacoes;
 
-    private Long duracaoAprox;
+    private String duracaoAprox;
 
     @ManyToOne
     @JoinColumn(name = "idServico")
