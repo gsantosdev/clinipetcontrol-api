@@ -33,7 +33,7 @@ public class Agendamento {
 
     private String observacoes;
 
-    private String duracaoAprox;
+    private Long duracaoAprox;
 
     @ManyToOne
     @JoinColumn(name = "idServico")

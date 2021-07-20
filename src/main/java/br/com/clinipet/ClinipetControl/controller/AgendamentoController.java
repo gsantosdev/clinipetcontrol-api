@@ -1,7 +1,8 @@
 package br.com.clinipet.ClinipetControl.controller;
 
 
-import br.com.clinipet.ClinipetControl.controller.dto.AgendamentoDTO;
+import br.com.clinipet.ClinipetControl.controller.dto.request.AgendamentoRequestDTO;
+import br.com.clinipet.ClinipetControl.controller.dto.response.AgendamentoResponseDTO;
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Agendamento;
 import br.com.clinipet.ClinipetControl.model.entity.Animal;
@@ -15,12 +16,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/agendamentos")
@@ -37,7 +43,7 @@ public class AgendamentoController {
 
 
     @PostMapping
-    public ResponseEntity marcar(@RequestBody AgendamentoDTO dto) {
+    public ResponseEntity marcar(@RequestBody AgendamentoRequestDTO dto) {
 
         try {
             Agendamento agendamento = converterParaAgendamento(dto);
@@ -47,11 +53,10 @@ public class AgendamentoController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
 
-
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity remarcar(@PathVariable("id") Long id, @RequestBody AgendamentoDTO dto) {
+    public ResponseEntity remarcar(@PathVariable("id") Long id, @RequestBody AgendamentoRequestDTO dto) {
         Agendamento agendamentoARemarcar = converterParaAgendamento(dto);
 
 
@@ -77,19 +82,40 @@ public class AgendamentoController {
         }).orElseGet(() -> new ResponseEntity("Agendamento não encontrado!", HttpStatus.BAD_REQUEST));
     }
 
+    @GetMapping("/listar")
+    public ResponseEntity listar() {
+        List<Agendamento> agendamentos = agendamentoService.obterTodos();
 
-    private Agendamento converterParaAgendamento(final AgendamentoDTO agendamentoDTO) {
+        List<AgendamentoResponseDTO> listagem = new ArrayList<>();
+
+        agendamentos.forEach((agendamento -> {
+
+            listagem.add(AgendamentoResponseDTO.builder().id(agendamento.getId())
+                    .title(agendamento.getServico().getNome())
+                    .start(agendamento.getDataHorario())
+                    .end(Date.from(agendamento.getDataHorario().toInstant().plusSeconds(agendamento.getDuracaoAprox() * 60)))
+                    .build());
+
+        }));
+        if (agendamentos.isEmpty()) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(listagem);
+    }
+
+
+    private Agendamento converterParaAgendamento(final AgendamentoRequestDTO agendamentoRequestDTO) {
         Agendamento agendamento = new Agendamento();
 
-        agendamento.setDataHorario(agendamentoDTO.getDataHorario());
-        agendamento.setObservacoes(agendamentoDTO.getObservacoes());
-        agendamento.setDuracaoAprox(agendamentoDTO.getDuracaoAprox());
+        agendamento.setDataHorario(agendamentoRequestDTO.getDataHorario());
+        agendamento.setObservacoes(agendamentoRequestDTO.getObservacoes());
+        agendamento.setDuracaoAprox(agendamentoRequestDTO.getDuracaoAprox());
 
-        Servico servico = servicoService.obterPorId(agendamentoDTO.getIdServico()).orElseThrow(() -> new RegraNegocioException("Serviço não encontrado!"));
+        Servico servico = servicoService.obterPorId(agendamentoRequestDTO.getIdServico()).orElseThrow(() -> new RegraNegocioException("Serviço não encontrado!"));
 
-        Animal animal = animalService.obterPorId(agendamentoDTO.getIdAnimal()).orElseThrow(() -> new RegraNegocioException("Animal não encontrado"));
+        Animal animal = animalService.obterPorId(agendamentoRequestDTO.getIdAnimal()).orElseThrow(() -> new RegraNegocioException("Animal não encontrado"));
 
-        Funcionario funcionario = funcionarioService.obterPorId(agendamentoDTO.getIdFuncionario()).orElseThrow(() -> new RegraNegocioException("Funcionário não encontrado"));
+        Funcionario funcionario = funcionarioService.obterPorId(agendamentoRequestDTO.getIdFuncionario()).orElseThrow(() -> new RegraNegocioException("Funcionário não encontrado"));
 
         agendamento.setServico(servico);
         agendamento.setAnimal(animal);

@@ -1,4 +1,4 @@
-package br.com.clinipet.ClinipetControl.controller.dto;
+package br.com.clinipet.ClinipetControl.controller.dto.request;
 
 
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UsuarioDTO {
+public class UsuarioRequestDTO {
     private String nome;
     private String senha;
 }

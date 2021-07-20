@@ -1,4 +1,4 @@
-package br.com.clinipet.ClinipetControl.controller.dto;
+package br.com.clinipet.ClinipetControl.controller.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +13,7 @@ import org.springframework.lang.Nullable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AnimalDTO {
+public class AnimalRequestDTO {
 
     private Long id;
 

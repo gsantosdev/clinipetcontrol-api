@@ -1,6 +1,6 @@
 package br.com.clinipet.ClinipetControl.controller;
 
-import br.com.clinipet.ClinipetControl.controller.dto.UsuarioDTO;
+import br.com.clinipet.ClinipetControl.controller.dto.request.UsuarioRequestDTO;
 import br.com.clinipet.ClinipetControl.exception.ErroAutenticacao;
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Usuario;
@@ -28,10 +28,10 @@ public class UsuarioController {
     private final UsuarioService usuarioService;
 
     @PostMapping("/autenticar")
-    public ResponseEntity autenticar(@RequestBody UsuarioDTO usuarioDTO) {
+    public ResponseEntity autenticar(@RequestBody UsuarioRequestDTO usuarioRequestDTO) {
 
         try {
-            Usuario usuarioAutenticado = usuarioService.autenticar(usuarioDTO.getNome(), usuarioDTO.getSenha());
+            Usuario usuarioAutenticado = usuarioService.autenticar(usuarioRequestDTO.getNome(), usuarioRequestDTO.getSenha());
             return ResponseEntity.ok().body(usuarioAutenticado);
         } catch (ErroAutenticacao e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -40,11 +40,11 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity cadastrar(@RequestBody UsuarioDTO usuarioDTO) {
+    public ResponseEntity cadastrar(@RequestBody UsuarioRequestDTO usuarioRequestDTO) {
 
         Usuario usuarioACadastrar = Usuario.builder()
-                .nome(usuarioDTO.getNome())
-                .senha(usuarioDTO.getSenha())
+                .nome(usuarioRequestDTO.getNome())
+                .senha(usuarioRequestDTO.getSenha())
                 .build();
 
         try {
@@ -56,9 +56,9 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody UsuarioDTO usuarioDTO) {
+    public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody UsuarioRequestDTO usuarioRequestDTO) {
 
-        Usuario usuario = Usuario.builder().nome(usuarioDTO.getNome()).senha(usuarioDTO.getSenha()).build();
+        Usuario usuario = Usuario.builder().nome(usuarioRequestDTO.getNome()).senha(usuarioRequestDTO.getSenha()).build();
 
         return usuarioService.obterPorId(id).map(entity -> {
             try {

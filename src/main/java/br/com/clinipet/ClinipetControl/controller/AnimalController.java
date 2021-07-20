@@ -1,7 +1,7 @@
 package br.com.clinipet.ClinipetControl.controller;
 
 
-import br.com.clinipet.ClinipetControl.controller.dto.AnimalDTO;
+import br.com.clinipet.ClinipetControl.controller.dto.request.AnimalRequestDTO;
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Animal;
 import br.com.clinipet.ClinipetControl.model.entity.Cliente;
@@ -34,9 +34,9 @@ public class AnimalController {
 
 
     @PostMapping
-    public ResponseEntity cadastrar(@RequestBody AnimalDTO animalDTO) {
+    public ResponseEntity cadastrar(@RequestBody AnimalRequestDTO animalRequestDTO) {
         try {
-            Animal animalSalvo = converterParaAnimal(animalDTO);
+            Animal animalSalvo = converterParaAnimal(animalRequestDTO);
             animalService.cadastrarAnimal(animalSalvo);
             return new ResponseEntity(animalSalvo, HttpStatus.CREATED);
         } catch (RegraNegocioException e) {
@@ -45,9 +45,9 @@ public class AnimalController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody AnimalDTO animalDTO) {
+    public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody AnimalRequestDTO animalRequestDTO) {
 
-        Animal animalAAtualizar = converterParaAnimal(animalDTO);
+        Animal animalAAtualizar = converterParaAnimal(animalRequestDTO);
 
         return animalService.obterPorId(id).map(entity -> {
             try {
@@ -98,26 +98,24 @@ public class AnimalController {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(animais);
-
-
     }
 
-    private Animal converterParaAnimal(final AnimalDTO animalDTO) {
+    private Animal converterParaAnimal(final AnimalRequestDTO animalRequestDTO) {
         Animal animal = new Animal();
 
-        animal.setNome(animalDTO.getNome());
-        animal.setSexo(animalDTO.getSexo());
-        animal.setIdade(animalDTO.getIdade());
-        animal.setRaca(animalDTO.getRaca());
-        animal.setCor(animalDTO.getCor());
-        animal.setEspecie(animalDTO.getEspecie());
-        animal.setPorte(animalDTO.getPorte());
-        animal.setAlergias(animalDTO.getAlergias());
-        animal.setPatologias(animalDTO.getPatologias());
-        animal.setMedicamentos(animalDTO.getMedicamentos());
+        animal.setNome(animalRequestDTO.getNome());
+        animal.setSexo(animalRequestDTO.getSexo());
+        animal.setIdade(animalRequestDTO.getIdade());
+        animal.setRaca(animalRequestDTO.getRaca());
+        animal.setCor(animalRequestDTO.getCor());
+        animal.setEspecie(animalRequestDTO.getEspecie());
+        animal.setPorte(animalRequestDTO.getPorte());
+        animal.setAlergias(animalRequestDTO.getAlergias());
+        animal.setPatologias(animalRequestDTO.getPatologias());
+        animal.setMedicamentos(animalRequestDTO.getMedicamentos());
 
 
-        Cliente cliente = clienteService.obterPorId(animalDTO.getIdCliente()).orElseThrow(() -> new RegraNegocioException("Cliente não encontrado!"));
+        Cliente cliente = clienteService.obterPorId(animalRequestDTO.getIdCliente()).orElseThrow(() -> new RegraNegocioException("Cliente não encontrado!"));
 
         animal.setCliente(cliente);
 

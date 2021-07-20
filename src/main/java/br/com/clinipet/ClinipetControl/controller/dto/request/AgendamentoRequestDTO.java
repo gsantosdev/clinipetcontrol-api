@@ -1,4 +1,4 @@
-package br.com.clinipet.ClinipetControl.controller.dto;
+package br.com.clinipet.ClinipetControl.controller.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,13 +13,13 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AgendamentoDTO {
+public class AgendamentoRequestDTO {
 
     private Date dataHorario;
 
     private String observacoes;
 
-    private String duracaoAprox;
+    private Long duracaoAprox;
 
     private Long idServico;
 

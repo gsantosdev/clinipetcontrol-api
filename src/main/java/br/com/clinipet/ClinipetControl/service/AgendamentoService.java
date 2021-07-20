@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -35,13 +36,18 @@ public class AgendamentoService {
         agendamentoRepository.delete(agendamento);
     }
 
-    private void validar(Agendamento agendamento) {
-
-
-    }
-
-
     public Optional<Agendamento> obterPorId(Long id) {
         return agendamentoRepository.findById(id);
     }
+
+    public List<Agendamento> obterTodos() {
+        return agendamentoRepository.findAll();
+    }
+
+    private void validar(Agendamento agendamento) {
+
+    }
+
+
+
 }
