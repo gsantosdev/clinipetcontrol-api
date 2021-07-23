@@ -92,8 +92,8 @@ public class AgendamentoController {
 
             listagem.add(AgendamentoResponseDTO.builder().id(agendamento.getId())
                     .title(agendamento.getServico().getNome())
-                    .start(agendamento.getDataHorario())
-                    .end(Date.from(agendamento.getDataHorario().toInstant().plusSeconds(agendamento.getDuracaoAprox() * 60)))
+                    .start(agendamento.getDataInicio())
+                    .end(agendamento.getDataFim())
                     .build());
 
         }));
@@ -107,9 +107,10 @@ public class AgendamentoController {
     private Agendamento converterParaAgendamento(final AgendamentoRequestDTO agendamentoRequestDTO) {
         Agendamento agendamento = new Agendamento();
 
-        agendamento.setDataHorario(agendamentoRequestDTO.getDataHorario());
+        agendamento.setDataInicio(agendamentoRequestDTO.getDataHorario());
         agendamento.setObservacoes(agendamentoRequestDTO.getObservacoes());
-        agendamento.setDuracaoAprox(agendamentoRequestDTO.getDuracaoAprox());
+        agendamento.setDataFim(Date.from(agendamentoRequestDTO.getDataHorario().toInstant()
+                .plusSeconds(agendamentoRequestDTO.getDuracaoAprox() * 60)));
 
         Servico servico = servicoService.obterPorId(agendamentoRequestDTO.getIdServico()).orElseThrow(() -> new RegraNegocioException("Serviço não encontrado!"));
 

@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -59,6 +60,7 @@ public class Cliente {
 
     private String uf;
 
+    @ToString.Exclude
     @JsonBackReference
     @JsonIgnoreProperties("cliente")
     @OneToMany(mappedBy = "cliente", targetEntity = Animal.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)

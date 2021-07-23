@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.Entity;
@@ -14,7 +15,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
 
 @Entity
 @Data
@@ -50,6 +50,7 @@ public class Animal {
 
     @Nullable
     private String medicamentos;
+
 
     @JsonIgnoreProperties("animal")
     @ManyToOne

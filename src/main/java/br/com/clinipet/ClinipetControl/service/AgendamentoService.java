@@ -1,5 +1,6 @@
 package br.com.clinipet.ClinipetControl.service;
 
+import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Agendamento;
 import br.com.clinipet.ClinipetControl.model.repository.AgendamentoRepository;
 import lombok.RequiredArgsConstructor;
@@ -46,8 +47,14 @@ public class AgendamentoService {
 
     private void validar(Agendamento agendamento) {
 
-    }
+        List<Agendamento> agendamentos = agendamentoRepository.findExistentAgendamentosByRange(agendamento.getDataInicio(),
+                agendamento.getDataFim(), agendamento.getFuncionario().getId(), agendamento.getAnimal().getId());
 
+        if (!agendamentos.isEmpty()) {
+            throw new RegraNegocioException("O funcionário(a) ou o animal já possui um agendamento no mesmo horário.");
+        }
+
+    }
 
 
 }
