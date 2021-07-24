@@ -1,9 +1,7 @@
 package br.com.clinipet.ClinipetControl.controller;
 
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
-import br.com.clinipet.ClinipetControl.model.entity.Cliente;
 import br.com.clinipet.ClinipetControl.model.entity.Especie;
-import br.com.clinipet.ClinipetControl.service.ClienteService;
 import br.com.clinipet.ClinipetControl.service.EspecieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,7 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -62,6 +63,7 @@ public class EspecieController {
         }
         return ResponseEntity.ok(especie);
     }
+
     @GetMapping("/listar")
     public ResponseEntity listarEspecies() {
         List<Especie> especies = especieService.listarEspecies();
@@ -69,6 +71,15 @@ public class EspecieController {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(especies);
+    }
+
+    @GetMapping("/listarNomes")
+    public ResponseEntity listarNomesEspecies() {
+        List<Map<String, String>> nomes = especieService.listarNomesEspecies();
+        if (nomes.isEmpty()) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(nomes);
     }
 
     @DeleteMapping("/{id}")

@@ -9,7 +9,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -36,13 +39,22 @@ public class EspecieService {
         return especieRepository.findAll();
     }
 
+    public List<Map<String, String>> listarNomesEspecies() {
+
+        List<Map<String, String>> listaNomes = new ArrayList<>();
+        especieRepository.findAll().forEach(especie -> {
+            Map<String, String> nomesEspecies = new HashMap<>();
+            nomesEspecies.put("label", especie.getNome());
+            listaNomes.add(nomesEspecies);
+        });
+
+        return listaNomes;
+    }
     @Transactional
     public void deletar(Especie especie) {
         Objects.requireNonNull(especie.getId());
         especieRepository.delete(especie);
     }
-
-
 
 
     public Optional<Especie> obterPorId(Long id) {
