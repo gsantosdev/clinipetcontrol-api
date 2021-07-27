@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
 
@@ -86,11 +87,20 @@ public class FuncionarioController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity deletar(@PathVariable("id") Long id) {
-        return funcionarioService.obterPorId(id).map(entity -> {
-            funcionarioService.deletar(entity);
-            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        try {
 
-        }).orElseGet(() -> new ResponseEntity("Espécie não encontrada!", HttpStatus.BAD_REQUEST));
+            return funcionarioService.obterPorId(id).map(entity -> {
+                funcionarioService.deletar(entity);
+                return new ResponseEntity(HttpStatus.NO_CONTENT);
+
+            }).orElseGet(() -> new ResponseEntity("Funcionário não encontrado!", HttpStatus.BAD_REQUEST));
+        } catch (Exception e) {
+            if (e.getCause() != null && e.getCause().getCause() instanceof SQLIntegrityConstraintViolationException) {
+                return new ResponseEntity("O funcionário ainda possui um agendamento!", HttpStatus.FORBIDDEN);
+            }
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }

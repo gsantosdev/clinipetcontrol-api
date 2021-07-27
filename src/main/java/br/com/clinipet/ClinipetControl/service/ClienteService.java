@@ -38,7 +38,7 @@ public class ClienteService {
     }
 
 
-    public Optional<List<Cliente>> obterClientePorNomeCpfTelefone(String busca){
+    public Optional<List<Cliente>> obterClientePorNomeCpfTelefone(String busca) {
         return clienteRepository.findByNomeOrTelefoneOrCpf(busca);
     }
 
@@ -62,7 +62,6 @@ public class ClienteService {
         }
     }
 
-
     public List<Cliente> listarClientes() {
         return clienteRepository.findAll();
     }
@@ -77,11 +76,17 @@ public class ClienteService {
         return animais;
     }
 
-
     @Transactional
     public void deletar(Cliente cliente) {
         Objects.requireNonNull(cliente.getId());
-        clienteRepository.delete(cliente);
+        try {
+            clienteRepository.delete(cliente);
+        } catch (Exception e) {
+            if (e.getCause() != null && e.getCause().getCause() instanceof SQLIntegrityConstraintViolationException) {
+                throw new RegraNegocioException("O cliente ainda possui um agendamento!");
+            }
+            e.printStackTrace();
+        }
     }
 
     public void validar(Cliente cliente) {

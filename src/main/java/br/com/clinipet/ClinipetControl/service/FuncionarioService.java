@@ -1,11 +1,13 @@
 package br.com.clinipet.ClinipetControl.service;
 
+import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Funcionario;
 import br.com.clinipet.ClinipetControl.model.repository.FuncionarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -30,18 +32,29 @@ public class FuncionarioService {
         return funcionarioRepository.save(funcionario);
     }
 
-    public List<Funcionario> listarFuncionarios() { return funcionarioRepository.findAll(); }
+    public List<Funcionario> listarFuncionarios() {
+        return funcionarioRepository.findAll();
+    }
 
-    public Optional<List<Funcionario>> obterFuncionarioPorNomeTelefone(String busca){
+    public Optional<List<Funcionario>> obterFuncionarioPorNomeTelefone(String busca) {
         return funcionarioRepository.findByNomeOrTelefone(busca);
     }
 
     @Transactional
     public void deletar(Funcionario funcionario) {
         Objects.requireNonNull(funcionario.getId());
-        funcionarioRepository.delete(funcionario);
+        try {
+            funcionarioRepository.delete(funcionario);
+        } catch (Exception e) {
+            if (e.getCause() != null && e.getCause().getCause() instanceof SQLIntegrityConstraintViolationException) {
+                throw new RegraNegocioException("O funcionário ainda possui um agendamento!");
+            }
+            e.printStackTrace();
+        }
     }
 
-    public Optional<Funcionario> obterPorId(Long id) { return funcionarioRepository.findById(id); }
+    public Optional<Funcionario> obterPorId(Long id) {
+        return funcionarioRepository.findById(id);
+    }
 
 }

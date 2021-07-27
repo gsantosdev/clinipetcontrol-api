@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -38,7 +39,15 @@ public class ServicoService {
     @Transactional
     public void deletar(Servico servico) {
         Objects.requireNonNull(servico.getId());
-        servicoRepository.delete(servico);
+        try {
+
+            servicoRepository.delete(servico);
+        } catch (Exception e) {
+            if (e.getCause() != null && e.getCause().getCause() instanceof SQLIntegrityConstraintViolationException) {
+                throw new RegraNegocioException("Existe um agendamento com este serviço!");
+            }
+            e.printStackTrace();
+        }
     }
 
     public Optional<Servico> obterPorId(Long id) {

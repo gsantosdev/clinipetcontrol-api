@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
 
@@ -84,11 +85,20 @@ public class AnimalController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity deletar(@PathVariable("id") Long id) {
-        return animalService.obterPorId(id).map(entity -> {
-            animalService.deletar(entity);
-            return new ResponseEntity(HttpStatus.NO_CONTENT);
 
-        }).orElseGet(() -> new ResponseEntity("Animal não encontrado!", HttpStatus.BAD_REQUEST));
+        try {
+            return animalService.obterPorId(id).map(entity -> {
+                animalService.deletar(entity);
+                return new ResponseEntity(HttpStatus.NO_CONTENT);
+
+            }).orElseGet(() -> new ResponseEntity("Animal não encontrado!", HttpStatus.BAD_REQUEST));
+        } catch (Exception e) {
+            if (e.getCause() != null && e.getCause().getCause() instanceof SQLIntegrityConstraintViolationException) {
+                return new ResponseEntity("O animal ainda possui um agendamento!", HttpStatus.FORBIDDEN);
+            }
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @GetMapping("/listar")

@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -33,7 +34,14 @@ public class AnimalService {
     @Transactional
     public void deletar(Animal animal) {
         Objects.requireNonNull(animal.getId());
-        repository.delete(animal);
+        try {
+            repository.delete(animal);
+        } catch (Exception e) {
+            if (e.getCause() != null && e.getCause().getCause() instanceof SQLIntegrityConstraintViolationException) {
+                throw new RegraNegocioException("O animal ainda possui um agendamento!");
+            }
+            e.printStackTrace();
+        }
     }
 
     public List<Animal> listarAnimais() {
@@ -52,7 +60,7 @@ public class AnimalService {
 
     public void validar(Animal animal) {
 
-        if ( animal.getNome().trim().equals("")) {
+        if (animal.getNome().trim().equals("")) {
             throw new RegraNegocioException("Informe um nome válido.");
         }
 
