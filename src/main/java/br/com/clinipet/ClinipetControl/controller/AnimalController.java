@@ -115,7 +115,7 @@ public class AnimalController {
 
         animal.setNome(animalRequestDTO.getNome());
         animal.setSexo(animalRequestDTO.getSexo());
-        animal.setIdade(animalRequestDTO.getIdade());
+        animal.setDataNascimento(animalRequestDTO.getDataNascimento());
         animal.setRaca(animalRequestDTO.getRaca());
         animal.setCor(animalRequestDTO.getCor());
         animal.setEspecie(animalRequestDTO.getEspecie());

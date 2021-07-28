@@ -1,5 +1,6 @@
 package br.com.clinipet.ClinipetControl.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.util.Date;
 
 @Entity
 @Data
@@ -32,7 +34,8 @@ public class Animal {
 
     private String sexo;
 
-    private String idade;
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    private Date dataNascimento;
 
     private String raca;
 
