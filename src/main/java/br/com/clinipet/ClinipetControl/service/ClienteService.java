@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -100,6 +101,10 @@ public class ClienteService {
         }
 
         if (cliente.getDataNascimento() == null) {
+            throw new RegraNegocioException("Informe uma data de nascimento válida.");
+        }
+
+        if (cliente.getDataNascimento().compareTo(new Date()) > 0) {
             throw new RegraNegocioException("Informe uma data de nascimento válida.");
         }
 
