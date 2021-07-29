@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -63,8 +64,32 @@ public class AnimalService {
         if (animal.getNome().trim().equals("")) {
             throw new RegraNegocioException("Informe um nome válido.");
         }
+        if (animal.getSexo().trim().equals("")){
+            throw new RegraNegocioException("Informe um sexo válido.");
+        }
+        if (animal.getDataNascimento() == null) {
+            throw new RegraNegocioException("Informe uma data de nascimento válida.");
+        }
+        if (animal.getDataNascimento().compareTo(new Date()) > 0) {
+            throw new RegraNegocioException("Informe uma data de nascimento válida.");
+        }
+        if (animal.getRaca().trim().equals("")){
+            throw new RegraNegocioException("Informe uma raça válida.");
+        }
+        if (animal.getEspecie().trim().equals("")){
+            throw new RegraNegocioException("Informe uma espécie válida.");
+        }
+        if (animal.getPorte().trim().equals("")){
+            throw new RegraNegocioException("Informe um porte válido.");
+        }
+        if (animal.getCor().trim().equals("")){
+            throw new RegraNegocioException("Informe uma cor válida");
+        }
+        if (animal.getCliente() == null){
+            throw new RegraNegocioException("Informe um cliente válido.");
+        }
 
-        //TODO Aumentar validações
+
 
     }
 }
