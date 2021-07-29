@@ -1,8 +1,6 @@
 package br.com.clinipet.ClinipetControl.service;
 
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
-import br.com.clinipet.ClinipetControl.model.entity.Animal;
-import br.com.clinipet.ClinipetControl.model.entity.Cliente;
 import br.com.clinipet.ClinipetControl.model.entity.Especie;
 import br.com.clinipet.ClinipetControl.model.repository.EspecieRepository;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +48,7 @@ public class EspecieService {
 
         return listaNomes;
     }
+
     @Transactional
     public void deletar(Especie especie) {
         Objects.requireNonNull(especie.getId());
@@ -66,8 +65,6 @@ public class EspecieService {
         if (especie.getNome().trim().equals("")) {
             throw new RegraNegocioException("Informe um nome válido.");
         }
-
-        //TODO Aumentar validações
 
     }
 
