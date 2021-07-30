@@ -89,7 +89,6 @@ public class AgendamentoController {
         List<AgendamentoResponseDTO> listagem = new ArrayList<>();
 
         agendamentos.forEach((agendamento -> {
-
             listagem.add(AgendamentoResponseDTO.builder().id(agendamento.getId())
                     .title(agendamento.getServico().getNome())
                     .start(agendamento.getDataInicio())

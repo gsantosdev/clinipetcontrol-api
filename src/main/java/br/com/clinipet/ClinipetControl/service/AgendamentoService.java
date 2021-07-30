@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -53,7 +54,21 @@ public class AgendamentoService {
         if (!agendamentos.isEmpty()) {
             throw new RegraNegocioException("O funcionário(a) ou o animal já possui um agendamento no mesmo horário.");
         }
-
+        if (agendamento.getDataInicio().compareTo(new Date()) < 0) {
+            throw new RegraNegocioException("Selecione um data e hora válida.");
+        }
+        if (agendamento.getDataFim().compareTo(new Date()) < 0) {
+            throw new RegraNegocioException("Selecione um data e hora válida.");
+        }
+        if (agendamento.getFuncionario() == null) {
+            throw new RegraNegocioException("Selecione um funcionário.");
+        }
+        if (agendamento.getAnimal() == null) {
+            throw new RegraNegocioException("Selecione um animal.");
+        }
+        if (agendamento.getServico() == null) {
+            throw new RegraNegocioException("Selecione um serviço.");
+        }
     }
 
 
