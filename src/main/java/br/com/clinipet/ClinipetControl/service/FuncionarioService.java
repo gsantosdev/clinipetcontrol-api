@@ -21,14 +21,16 @@ public class FuncionarioService {
 
     @Transactional
     public Funcionario cadastrar(Funcionario funcionario) {
-        //validar(animal);
+        validar(funcionario);
         return funcionarioRepository.save(funcionario);
     }
+
+
 
     @Transactional
     public Funcionario atualizar(Funcionario funcionario) {
         Objects.requireNonNull(funcionario.getId());
-        //validar(especie);
+        validar(funcionario);
         return funcionarioRepository.save(funcionario);
     }
 
@@ -57,4 +59,21 @@ public class FuncionarioService {
         return funcionarioRepository.findById(id);
     }
 
+    private void validar(Funcionario funcionario) {
+        if (funcionario.getNome().trim().equals("")) {
+            throw new RegraNegocioException("Informe um nome válido.");
+        }
+        if (funcionario.getEmail().trim().equals("")) {
+            throw new RegraNegocioException("Informe um email válido.");
+        }
+        if (funcionario.getTelefone().trim().equals("")) {
+            throw new RegraNegocioException("Informe um telefone válido.");
+        }
+        if (funcionario.getSexo().trim().equals("")) {
+            throw new RegraNegocioException("Informe um sexo válido.");
+        }
+        if (funcionario.getVeterinario() == null) {
+            throw new RegraNegocioException("Informe se é veterinário.");
+        }
+    }
 }

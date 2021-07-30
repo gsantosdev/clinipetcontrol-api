@@ -40,7 +40,6 @@ public class ServicoService {
     public void deletar(Servico servico) {
         Objects.requireNonNull(servico.getId());
         try {
-
             servicoRepository.delete(servico);
         } catch (Exception e) {
             if (e.getCause() != null && e.getCause().getCause() instanceof SQLIntegrityConstraintViolationException) {
@@ -59,8 +58,5 @@ public class ServicoService {
         if (servico.getNome().trim().equals("")) {
             throw new RegraNegocioException("Informe um nome válido.");
         }
-
-        //TODO Aumentar validações
-
     }
 }
