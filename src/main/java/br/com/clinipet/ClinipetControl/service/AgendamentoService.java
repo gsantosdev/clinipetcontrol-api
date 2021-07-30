@@ -4,9 +4,14 @@ import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Agendamento;
 import br.com.clinipet.ClinipetControl.model.repository.AgendamentoRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -51,13 +56,12 @@ public class AgendamentoService {
         List<Agendamento> agendamentos = agendamentoRepository.findExistentAgendamentosByRange(agendamento.getDataInicio(),
                 agendamento.getDataFim(), agendamento.getFuncionario().getId(), agendamento.getAnimal().getId());
 
+
+
         if (!agendamentos.isEmpty()) {
             throw new RegraNegocioException("O funcionário(a) ou o animal já possui um agendamento no mesmo horário.");
         }
-        if (agendamento.getDataInicio().compareTo(new Date()) < 0) {
-            throw new RegraNegocioException("Selecione um data e hora válida.");
-        }
-        if (agendamento.getDataFim().compareTo(new Date()) < 0) {
+        if (DateUtils.addHours(agendamento.getDataInicio(), 3).compareTo(new Date(System.currentTimeMillis())) < 0) {
             throw new RegraNegocioException("Selecione um data e hora válida.");
         }
         if (agendamento.getFuncionario() == null) {
@@ -69,6 +73,18 @@ public class AgendamentoService {
         if (agendamento.getServico() == null) {
             throw new RegraNegocioException("Selecione um serviço.");
         }
+    }
+
+    public LocalDate convertToLocalDateViaMilisecond(Date dateToConvert) {
+        return Instant.ofEpochMilli(dateToConvert.getTime())
+                .atZone(ZoneId.of("America/Sao_Paulo"))
+                .toLocalDate();
+    }
+
+    public LocalDateTime convertToLocalDateTimeViaInstant(Date dateToConvert) {
+        return dateToConvert.toInstant()
+                .atZone(ZoneId.of("America/Sao_Paulo"))
+                .toLocalDateTime();
     }
 
 
