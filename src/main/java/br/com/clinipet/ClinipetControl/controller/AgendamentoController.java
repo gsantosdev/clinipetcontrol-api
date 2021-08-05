@@ -90,7 +90,7 @@ public class AgendamentoController {
 
         agendamentos.forEach((agendamento -> {
             listagem.add(AgendamentoResponseDTO.builder().id(agendamento.getId())
-                    .title(agendamento.getServico().getNome())
+                    .title(agendamento.getServico().getNome()+" - "+agendamento.getAnimal().getNome())
                     .start(agendamento.getDataInicio())
                     .end(agendamento.getDataFim())
                     .build());
