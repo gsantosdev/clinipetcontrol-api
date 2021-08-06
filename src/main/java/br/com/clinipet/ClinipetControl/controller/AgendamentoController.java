@@ -93,6 +93,11 @@ public class AgendamentoController {
                     .title(agendamento.getServico().getNome()+" - "+agendamento.getAnimal().getNome())
                     .start(agendamento.getDataInicio())
                     .end(agendamento.getDataFim())
+                    .nomeFuncionario(agendamento.getFuncionario().getNome())
+                    .nomeAnimal(agendamento.getAnimal().getNome())
+                    .nomeProprietario(agendamento.getAnimal().getCliente().getNome())
+                    .nomeServico(agendamento.getServico().getNome())
+                    .telefoneProprietario(agendamento.getAnimal().getCliente().getTelefone())
                     .build());
 
         }));
