@@ -1,8 +1,5 @@
 package br.com.clinipet.ClinipetControl.controller.dto.response;
 
-import br.com.clinipet.ClinipetControl.model.entity.Animal;
-import br.com.clinipet.ClinipetControl.model.entity.Funcionario;
-import br.com.clinipet.ClinipetControl.model.entity.Servico;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

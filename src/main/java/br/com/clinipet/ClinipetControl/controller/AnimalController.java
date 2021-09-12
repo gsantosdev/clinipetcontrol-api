@@ -2,6 +2,7 @@ package br.com.clinipet.ClinipetControl.controller;
 
 
 import br.com.clinipet.ClinipetControl.controller.dto.request.AnimalRequestDTO;
+import br.com.clinipet.ClinipetControl.controller.mapper.AnimalMapper;
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Animal;
 import br.com.clinipet.ClinipetControl.model.entity.Cliente;
@@ -33,11 +34,13 @@ public class AnimalController {
 
     private final ClienteService clienteService;
 
+    private final AnimalMapper animalMapper;
+
 
     @PostMapping
     public ResponseEntity cadastrar(@RequestBody AnimalRequestDTO animalRequestDTO) {
         try {
-            Animal animalSalvo = converterParaAnimal(animalRequestDTO);
+            Animal animalSalvo = animalMapper.toEntity(animalRequestDTO);
             animalService.cadastrarAnimal(animalSalvo);
             return new ResponseEntity(animalSalvo, HttpStatus.CREATED);
         } catch (RegraNegocioException e) {
