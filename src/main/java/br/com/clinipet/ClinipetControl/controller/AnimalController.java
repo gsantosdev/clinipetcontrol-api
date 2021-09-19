@@ -32,8 +32,6 @@ public class AnimalController {
 
     private final AnimalService animalService;
 
-    private final ClienteService clienteService;
-
     private final AnimalMapper animalMapper;
 
 
@@ -51,7 +49,7 @@ public class AnimalController {
     @PutMapping("/{id}")
     public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody AnimalRequestDTO animalRequestDTO) {
 
-        Animal animalAAtualizar = converterParaAnimal(animalRequestDTO);
+        Animal animalAAtualizar = animalMapper.toEntity(animalRequestDTO);
 
         return animalService.obterPorId(id).map(entity -> {
             try {
@@ -111,28 +109,6 @@ public class AnimalController {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(animais);
-    }
-
-    private Animal converterParaAnimal(final AnimalRequestDTO animalRequestDTO) {
-        Animal animal = new Animal();
-
-        animal.setNome(animalRequestDTO.getNome());
-        animal.setSexo(animalRequestDTO.getSexo());
-        animal.setDataNascimento(animalRequestDTO.getDataNascimento());
-        animal.setRaca(animalRequestDTO.getRaca());
-        animal.setCor(animalRequestDTO.getCor());
-        animal.setEspecie(animalRequestDTO.getEspecie());
-        animal.setPorte(animalRequestDTO.getPorte());
-        animal.setAlergias(animalRequestDTO.getAlergias());
-        animal.setPatologias(animalRequestDTO.getPatologias());
-        animal.setMedicamentos(animalRequestDTO.getMedicamentos());
-
-
-        Cliente cliente = clienteService.obterPorId(animalRequestDTO.getIdCliente()).orElseThrow(() -> new RegraNegocioException("Cliente não encontrado!"));
-
-        animal.setCliente(cliente);
-
-        return animal;
     }
 
 

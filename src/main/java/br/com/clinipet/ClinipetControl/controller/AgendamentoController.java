@@ -3,6 +3,7 @@ package br.com.clinipet.ClinipetControl.controller;
 
 import br.com.clinipet.ClinipetControl.controller.dto.request.AgendamentoRequestDTO;
 import br.com.clinipet.ClinipetControl.controller.dto.response.AgendamentoResponseDTO;
+import br.com.clinipet.ClinipetControl.controller.mapper.AgendamentoMapper;
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Agendamento;
 import br.com.clinipet.ClinipetControl.model.entity.Animal;
@@ -41,12 +42,14 @@ public class AgendamentoController {
 
     private final FuncionarioService funcionarioService;
 
+    private final AgendamentoMapper agendamentoMapper;
+
 
     @PostMapping
     public ResponseEntity marcar(@RequestBody AgendamentoRequestDTO dto) {
 
         try {
-            Agendamento agendamento = converterParaAgendamento(dto);
+            Agendamento agendamento = agendamentoMapper.toEntity(dto);
             agendamentoService.marcar(agendamento);
             return new ResponseEntity(agendamento, HttpStatus.CREATED);
         } catch (RegraNegocioException e) {
@@ -57,7 +60,7 @@ public class AgendamentoController {
 
     @PutMapping("/{id}")
     public ResponseEntity remarcar(@PathVariable("id") Long id, @RequestBody AgendamentoRequestDTO dto) {
-        Agendamento agendamentoARemarcar = converterParaAgendamento(dto);
+        Agendamento agendamentoARemarcar = agendamentoMapper.toEntity(dto);
 
 
         return agendamentoService.obterPorId(id).map(entity -> {
@@ -101,32 +104,11 @@ public class AgendamentoController {
                     .build());
 
         }));
+
         if (agendamentos.isEmpty()) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(listagem);
-    }
-
-
-    private Agendamento converterParaAgendamento(final AgendamentoRequestDTO agendamentoRequestDTO) {
-        Agendamento agendamento = new Agendamento();
-
-        agendamento.setDataInicio(agendamentoRequestDTO.getDataHorario());
-        agendamento.setObservacoes(agendamentoRequestDTO.getObservacoes());
-        agendamento.setDataFim(Date.from(agendamentoRequestDTO.getDataHorario().toInstant()
-                .plusSeconds(agendamentoRequestDTO.getDuracaoAprox() * 60)));
-
-        Servico servico = servicoService.obterPorId(agendamentoRequestDTO.getIdServico()).orElseThrow(() -> new RegraNegocioException("Serviço não encontrado!"));
-
-        Animal animal = animalService.obterPorId(agendamentoRequestDTO.getIdAnimal()).orElseThrow(() -> new RegraNegocioException("Animal não encontrado"));
-
-        Funcionario funcionario = funcionarioService.obterPorId(agendamentoRequestDTO.getIdFuncionario()).orElseThrow(() -> new RegraNegocioException("Funcionário não encontrado"));
-
-        agendamento.setServico(servico);
-        agendamento.setAnimal(animal);
-        agendamento.setFuncionario(funcionario);
-
-        return agendamento;
     }
 
 }
