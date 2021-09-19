@@ -16,8 +16,12 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 
-@Mapper
+import static org.mapstruct.ReportingPolicy.IGNORE;
+
+
+@Mapper(componentModel = "spring", unmappedTargetPolicy = IGNORE)
 public abstract class AgendamentoMapper {
 
     @Autowired
@@ -32,6 +36,8 @@ public abstract class AgendamentoMapper {
     @Mapping(source = "idServico", target = "servico", qualifiedByName = "getServico")
     @Mapping(source = "idAnimal", target = "animal", qualifiedByName = "getAnimal")
     @Mapping(source = "idFuncionario", target = "funcionario", qualifiedByName = "getFuncionario")
+    @Mapping(source = "dataHorario", target = "dataInicio")
+    @Mapping(source = ".", target = "dataFim", qualifiedByName = "getDataFim")
     public abstract Agendamento toEntity(AgendamentoRequestDTO agendamentoRequestDTO);
 
 
@@ -50,5 +56,10 @@ public abstract class AgendamentoMapper {
         return funcionarioService.obterPorId(id).orElseThrow(() -> new RegraNegocioException("Funcionário não encontrado"));
     }
 
+    @Named("getDataFim")
+    Date getDataFim(AgendamentoRequestDTO agendamentoRequestDTO) {
+        return Date.from(agendamentoRequestDTO.getDataHorario().toInstant()
+                .plusSeconds(agendamentoRequestDTO.getDuracaoAprox() * 60));
+    }
 
 }

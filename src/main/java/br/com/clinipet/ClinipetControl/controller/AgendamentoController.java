@@ -6,9 +6,6 @@ import br.com.clinipet.ClinipetControl.controller.dto.response.AgendamentoRespon
 import br.com.clinipet.ClinipetControl.controller.mapper.AgendamentoMapper;
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Agendamento;
-import br.com.clinipet.ClinipetControl.model.entity.Animal;
-import br.com.clinipet.ClinipetControl.model.entity.Funcionario;
-import br.com.clinipet.ClinipetControl.model.entity.Servico;
 import br.com.clinipet.ClinipetControl.service.AgendamentoService;
 import br.com.clinipet.ClinipetControl.service.AnimalService;
 import br.com.clinipet.ClinipetControl.service.FuncionarioService;
@@ -25,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +47,7 @@ public class AgendamentoController {
         try {
             Agendamento agendamento = agendamentoMapper.toEntity(dto);
             agendamentoService.marcar(agendamento);
-            return new ResponseEntity(agendamento, HttpStatus.CREATED);
+            return ResponseEntity.status(HttpStatus.CREATED).body(agendamento);
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -67,12 +63,12 @@ public class AgendamentoController {
             try {
                 agendamentoARemarcar.setId(entity.getId());
                 agendamentoService.remarcar(agendamentoARemarcar);
-                return ResponseEntity.ok(agendamentoARemarcar);
+                return ResponseEntity.ok().body(agendamentoARemarcar);
             } catch (RegraNegocioException e) {
                 return ResponseEntity.badRequest().body(e.getMessage());
             }
 
-        }).orElseGet(() -> new ResponseEntity("Agendamento não encontrado!", HttpStatus.BAD_REQUEST));
+        }).orElseGet(() -> ResponseEntity.badRequest().body("Agendamento não encontrado!"));
 
     }
 
@@ -80,9 +76,9 @@ public class AgendamentoController {
     public ResponseEntity desmarcar(@PathVariable("id") Long id) {
         return agendamentoService.obterPorId(id).map(entity -> {
             agendamentoService.desmarcar(entity);
-            return new ResponseEntity(HttpStatus.NO_CONTENT);
+            return ResponseEntity.noContent().build();
 
-        }).orElseGet(() -> new ResponseEntity("Agendamento não encontrado!", HttpStatus.BAD_REQUEST));
+        }).orElseGet(() -> ResponseEntity.badRequest().body("Agendamento não encontrado!"));
     }
 
     @GetMapping("/listar")
@@ -91,22 +87,19 @@ public class AgendamentoController {
 
         List<AgendamentoResponseDTO> listagem = new ArrayList<>();
 
-        agendamentos.forEach((agendamento -> {
-            listagem.add(AgendamentoResponseDTO.builder().id(agendamento.getId())
-                    .title(agendamento.getServico().getNome()+" - "+agendamento.getAnimal().getNome())
-                    .start(agendamento.getDataInicio())
-                    .end(agendamento.getDataFim())
-                    .nomeFuncionario(agendamento.getFuncionario().getNome())
-                    .nomeAnimal(agendamento.getAnimal().getNome())
-                    .nomeProprietario(agendamento.getAnimal().getCliente().getNome())
-                    .nomeServico(agendamento.getServico().getNome())
-                    .telefoneProprietario(agendamento.getAnimal().getCliente().getTelefone())
-                    .build());
-
-        }));
+        agendamentos.forEach((agendamento -> listagem.add(AgendamentoResponseDTO.builder().id(agendamento.getId())
+                .title(agendamento.getServico().getNome() + " - " + agendamento.getAnimal().getNome())
+                .start(agendamento.getDataInicio())
+                .end(agendamento.getDataFim())
+                .nomeFuncionario(agendamento.getFuncionario().getNome())
+                .nomeAnimal(agendamento.getAnimal().getNome())
+                .nomeProprietario(agendamento.getAnimal().getCliente().getNome())
+                .nomeServico(agendamento.getServico().getNome())
+                .telefoneProprietario(agendamento.getAnimal().getCliente().getTelefone())
+                .build())));
 
         if (agendamentos.isEmpty()) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(listagem);
     }
