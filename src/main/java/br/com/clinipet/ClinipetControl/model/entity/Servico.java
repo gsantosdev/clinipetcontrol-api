@@ -1,6 +1,5 @@
 package br.com.clinipet.ClinipetControl.model.entity;
 
-import br.com.clinipet.ClinipetControl.model.enums.TipoFuncionario;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

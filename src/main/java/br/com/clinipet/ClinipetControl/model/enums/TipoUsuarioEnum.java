@@ -1,6 +1,7 @@
 package br.com.clinipet.ClinipetControl.model.enums;
 
-public enum TipoFuncionario {
+public enum TipoUsuarioEnum {
     VETERINARIO,
-    SECRETARIA
+    SECRETARIA,
+    ADMIN
 }

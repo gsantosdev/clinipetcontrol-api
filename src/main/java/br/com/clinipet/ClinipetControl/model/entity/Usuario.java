@@ -1,5 +1,6 @@
 package br.com.clinipet.ClinipetControl.model.entity;
 
+import br.com.clinipet.ClinipetControl.model.enums.TipoUsuarioEnum;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -30,5 +33,8 @@ public class Usuario {
 
     @JsonIgnore
     private String senha;
+
+    @Enumerated(value = EnumType.STRING)
+    private TipoUsuarioEnum tipo;
 
 }

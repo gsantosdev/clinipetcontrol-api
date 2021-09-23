@@ -1,6 +1,7 @@
 package br.com.clinipet.ClinipetControl.controller;
 
 import br.com.clinipet.ClinipetControl.controller.dto.request.UsuarioRequestDTO;
+import br.com.clinipet.ClinipetControl.controller.mapper.UsuarioMapper;
 import br.com.clinipet.ClinipetControl.exception.ErroAutenticacao;
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Usuario;
@@ -27,6 +28,8 @@ public class UsuarioController {
 
     private final UsuarioService usuarioService;
 
+    private final UsuarioMapper usuarioMapper;
+
     @PostMapping("/autenticar")
     public ResponseEntity autenticar(@RequestBody UsuarioRequestDTO usuarioRequestDTO) {
 
@@ -42,10 +45,7 @@ public class UsuarioController {
     @PostMapping
     public ResponseEntity cadastrar(@RequestBody UsuarioRequestDTO usuarioRequestDTO) {
 
-        Usuario usuarioACadastrar = Usuario.builder()
-                .nome(usuarioRequestDTO.getNome())
-                .senha(usuarioRequestDTO.getSenha())
-                .build();
+        Usuario usuarioACadastrar = usuarioMapper.toEntity(usuarioRequestDTO);
 
         try {
             Usuario usuarioSalvo = usuarioService.cadastrar(usuarioACadastrar);
@@ -104,7 +104,7 @@ public class UsuarioController {
     @GetMapping
     public ResponseEntity listarUsuarios() {
         List<Usuario> usuarios = usuarioService.listarUsuarios();
-        if (usuarios.isEmpty()){
+        if (usuarios.isEmpty()) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(usuarios);
