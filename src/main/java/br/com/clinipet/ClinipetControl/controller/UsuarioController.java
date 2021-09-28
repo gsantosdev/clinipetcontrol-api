@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -108,6 +109,16 @@ public class UsuarioController {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(usuarios);
+
+    }
+
+    @GetMapping("/tipos")
+    public ResponseEntity listarTiposDeUsuario() {
+        List<Map<String, String>> tipos = usuarioService.listarNomesTipos();
+        if (tipos.isEmpty()) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(tipos);
 
     }
 

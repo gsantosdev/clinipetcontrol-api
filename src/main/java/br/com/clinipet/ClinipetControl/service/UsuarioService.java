@@ -3,12 +3,14 @@ package br.com.clinipet.ClinipetControl.service;
 import br.com.clinipet.ClinipetControl.exception.ErroAutenticacao;
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Usuario;
+import br.com.clinipet.ClinipetControl.model.enums.TipoUsuarioEnum;
 import br.com.clinipet.ClinipetControl.model.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -62,6 +64,15 @@ public class UsuarioService {
         return repository.findAll();
     }
 
+
+
+    public List<Map<String, String>> listarNomesTipos() {
+        return TipoUsuarioEnum.listarNomesTipos();
+    }
+
+    public List<TipoUsuarioEnum> listarTiposDeUsuario() {
+        return TipoUsuarioEnum.getTipos();
+    }
 
     @Transactional
     public void deletar(Usuario usuario) {
