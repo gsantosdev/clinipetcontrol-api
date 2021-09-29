@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -59,7 +60,7 @@ public class UsuarioController {
     @PutMapping("/{id}")
     public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody UsuarioRequestDTO usuarioRequestDTO) {
 
-        Usuario usuario = Usuario.builder().nome(usuarioRequestDTO.getNome()).senha(usuarioRequestDTO.getSenha()).build();
+        Usuario usuario = usuarioMapper.toEntity(usuarioRequestDTO);
 
         return usuarioService.obterPorId(id).map(entity -> {
             try {
@@ -83,9 +84,9 @@ public class UsuarioController {
         return ResponseEntity.ok(usuario);
     }
 
-    @GetMapping("/nome/{nome}")
-    public ResponseEntity obterPorNome(@PathVariable("nome") String nome) {
-        Optional<Usuario> usuario = usuarioService.obterPorNome(nome);
+    @GetMapping
+    public ResponseEntity obterPorNome(@RequestParam("busca") String busca) {
+        List<Usuario> usuario = usuarioService.obterPorNome(busca);
 
         if (usuario.isEmpty()) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
@@ -102,7 +103,7 @@ public class UsuarioController {
         }).orElseGet(() -> new ResponseEntity("Usuário não encontrado!", HttpStatus.BAD_REQUEST));
     }
 
-    @GetMapping
+    @GetMapping("/listar")
     public ResponseEntity listarUsuarios() {
         List<Usuario> usuarios = usuarioService.listarUsuarios();
         if (usuarios.isEmpty()) {

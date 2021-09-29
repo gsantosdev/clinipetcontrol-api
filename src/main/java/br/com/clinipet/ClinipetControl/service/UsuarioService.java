@@ -37,14 +37,14 @@ public class UsuarioService {
 
     @Transactional
     public Usuario cadastrar(Usuario usuario) {
-        validarNome(usuario.getNome());
+        validar(usuario);
         return repository.save(usuario);
     }
 
     @Transactional
     public Usuario atualizar(Usuario usuario) {
         Objects.requireNonNull(usuario);
-        validarNome(usuario.getNome());
+        validar(usuario);
         return repository.save(usuario);
     }
 
@@ -54,16 +54,15 @@ public class UsuarioService {
         return repository.findById(id);
     }
 
-    @Transactional
-    public Optional<Usuario> obterPorNome(String nome) {
-        return repository.findByNome(nome);
+
+    public List<Usuario> obterPorNome(String nome) {
+        return repository.findAllByNome(nome).get();
     }
 
     @Transactional
     public List<Usuario> listarUsuarios() {
         return repository.findAll();
     }
-
 
 
     public List<Map<String, String>> listarNomesTipos() {
@@ -81,10 +80,19 @@ public class UsuarioService {
 
     }
 
+    public void validar(Usuario usuario) {
 
-    public void validarNome(String nome) {
-        if (repository.existsByNome(nome)) {
+
+        if (usuario.getNome() == null || usuario.getNome().trim().equals("")) {
+            throw new RegraNegocioException("Informe um nome válido.");
+        }
+
+        if (!repository.findEqualNomes(usuario.getNome(), usuario.getId()).isEmpty()) {
             throw new RegraNegocioException("Já existe um usuário cadastrado com este nome.");
+        }
+
+        if (usuario.getTipo() == null) {
+            throw new RegraNegocioException("Informe um tipo válido.");
         }
 
     }
