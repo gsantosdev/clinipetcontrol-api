@@ -7,9 +7,6 @@ import br.com.clinipet.ClinipetControl.controller.mapper.AgendamentoMapper;
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Agendamento;
 import br.com.clinipet.ClinipetControl.service.AgendamentoService;
-import br.com.clinipet.ClinipetControl.service.AnimalService;
-import br.com.clinipet.ClinipetControl.service.FuncionarioService;
-import br.com.clinipet.ClinipetControl.service.ServicoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,12 +28,6 @@ import java.util.List;
 public class AgendamentoController {
 
     private final AgendamentoService agendamentoService;
-
-    private final ServicoService servicoService;
-
-    private final AnimalService animalService;
-
-    private final FuncionarioService funcionarioService;
 
     private final AgendamentoMapper agendamentoMapper;
 

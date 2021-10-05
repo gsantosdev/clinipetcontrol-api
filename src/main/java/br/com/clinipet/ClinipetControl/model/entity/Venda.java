@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 
@@ -20,24 +21,19 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "servico")
-public class Servico {
+@Table(name = "venda")
+public class Venda {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nome;
+    private Date data;
 
-    private String observacoes;
-
-    private BigDecimal valor;
-
-    private BigDecimal margemLucro;
-
-    private BigDecimal valorVenda;
+    //TODO ESTUDAR POSSIBILIDADE DE USAR @FORMULA
+    private BigDecimal valorTotal;
 
     @ManyToMany
-    private List<Venda> vendas;
+    private List<Servico> servicos;
 
 }

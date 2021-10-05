@@ -6,6 +6,8 @@ import br.com.clinipet.ClinipetControl.model.entity.Usuario;
 import br.com.clinipet.ClinipetControl.model.enums.TipoUsuarioEnum;
 import br.com.clinipet.ClinipetControl.model.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -55,13 +57,13 @@ public class UsuarioService {
     }
 
 
-    public List<Usuario> obterPorNome(String nome) {
-        return repository.findAllByNome(nome).get();
+    public List<Usuario> obterTodosPorNome(String nome) {
+        return repository.findAllByNome(nome);
     }
 
-    @Transactional
-    public List<Usuario> listarUsuarios() {
-        return repository.findAll();
+
+    public Page<Usuario> listarUsuarios(Pageable pageable) {
+        return repository.findAll(pageable);
     }
 
 
@@ -85,6 +87,11 @@ public class UsuarioService {
 
         if (usuario.getNome() == null || usuario.getNome().trim().equals("")) {
             throw new RegraNegocioException("Informe um nome válido.");
+        }
+
+        if (usuario.getId() == null && !repository.findAllByNome(usuario.getNome()).isEmpty()) {
+            throw new RegraNegocioException("Já existe um usuário cadastrado com este nome.");
+
         }
 
         if (!repository.findEqualNomes(usuario.getNome(), usuario.getId()).isEmpty()) {

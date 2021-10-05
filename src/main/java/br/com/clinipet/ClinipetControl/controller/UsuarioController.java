@@ -7,6 +7,9 @@ import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Usuario;
 import br.com.clinipet.ClinipetControl.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -85,14 +88,15 @@ public class UsuarioController {
     }
 
     @GetMapping
-    public ResponseEntity obterPorNome(@RequestParam("busca") String busca) {
-        List<Usuario> usuario = usuarioService.obterPorNome(busca);
+    public ResponseEntity obterPorNomeTodos(@RequestParam("busca") String busca) {
+        List<Usuario> usuario = usuarioService.obterTodosPorNome(busca);
 
         if (usuario.isEmpty()) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return new ResponseEntity(usuario, HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(usuario);
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity deletar(@PathVariable("id") Long id) {
@@ -104,8 +108,22 @@ public class UsuarioController {
     }
 
     @GetMapping("/listar")
-    public ResponseEntity listarUsuarios() {
-        List<Usuario> usuarios = usuarioService.listarUsuarios();
+    public ResponseEntity listarUsuariosTodos(Pageable pageable) {
+        Page<Usuario> usuarios = usuarioService.listarUsuarios(pageable);
+        if (usuarios.isEmpty()) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(usuarios);
+
+    }
+
+
+    @GetMapping("/listarPage")
+    public ResponseEntity<Page<Usuario>> listarUsuarios(@RequestParam(value = "pg", required = false) Integer pg, @RequestParam(value = "qtd", required = false) Integer qtd) {
+
+        Pageable pageable = PageRequest.of(pg, qtd);
+
+        Page<Usuario> usuarios = usuarioService.listarUsuarios(pageable);
         if (usuarios.isEmpty()) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
