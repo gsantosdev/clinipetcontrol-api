@@ -40,7 +40,6 @@ public class Cliente {
     @Column(unique = true)
     private String cpf;
 
-    // @Temporal(TemporalType.DATE)//'aaaa-MM-dd
     @JsonFormat(pattern = "dd/MM/yyyy")
     private Date dataNascimento;
 

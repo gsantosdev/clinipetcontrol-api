@@ -7,14 +7,19 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Data
@@ -34,7 +39,6 @@ public class Agendamento {
 
     private Date dataFim;
 
-
     @JsonBackReference
     @JsonIgnoreProperties("servico")
     @ManyToOne
@@ -52,5 +56,12 @@ public class Agendamento {
     @ManyToOne
     @JoinColumn(name = "idFuncionario")
     private Funcionario funcionario;
+
+
+    @ToString.Exclude
+    @JsonBackReference
+    @JsonIgnoreProperties("agendamento")
+    @OneToMany(mappedBy = "agendamento", targetEntity = ItemVenda.class, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    private List<ItemVenda> itensVenda = new ArrayList<>();
 
 }
