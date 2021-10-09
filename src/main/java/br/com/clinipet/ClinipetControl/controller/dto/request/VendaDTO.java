@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class VendaDTO {
 
-    private List<ItemVendaDTO> itensVendaDTO;
+    private List<ItemVendaDTO> itensVenda;
 
     private StatusVendaEnum status;
 

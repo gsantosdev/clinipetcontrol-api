@@ -1,6 +1,5 @@
 package br.com.clinipet.ClinipetControl.service;
 
-import br.com.clinipet.ClinipetControl.controller.dto.request.ItemVendaDTO;
 import br.com.clinipet.ClinipetControl.controller.dto.request.VendaDTO;
 import br.com.clinipet.ClinipetControl.controller.mapper.AgendamentoMapper;
 import br.com.clinipet.ClinipetControl.model.entity.Agendamento;
@@ -16,7 +15,6 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -34,7 +32,7 @@ public class VendaService {
 
         List<ItemVenda> itemList = new ArrayList<>();
 
-        vendaDTO.getItensVendaDTO().forEach(itemVendaDTO -> {
+        vendaDTO.getItensVenda().forEach(itemVendaDTO -> {
 
             Agendamento agendamento = agendamentoMapper.toEntity(itemVendaDTO.getAgendamento());
             Agendamento agendamentoSalvo = agendamentoService.marcar(agendamento);
