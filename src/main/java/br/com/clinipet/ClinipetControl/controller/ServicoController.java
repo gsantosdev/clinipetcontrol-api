@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
@@ -61,6 +62,21 @@ public class ServicoController {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(servico);
+    }
+
+    @GetMapping("/{id}/valor")
+    public ResponseEntity obterValorVendaPorId(@PathVariable("id") Long id) {
+        try {
+            BigDecimal servico = servicoService.obterValorVenda(id);
+
+            if (servico == null) {
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
+            }
+            return ResponseEntity.ok(servico);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+
     }
 
     @GetMapping("/listar")

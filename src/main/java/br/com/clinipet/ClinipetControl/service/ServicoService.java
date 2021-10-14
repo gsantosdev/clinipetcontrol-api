@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.Objects;
@@ -51,6 +52,12 @@ public class ServicoService {
 
     public Optional<Servico> obterPorId(Long id) {
         return servicoRepository.findById(id);
+    }
+
+    public BigDecimal obterValorVenda(Long id) {
+        return obterPorId(id).map(Servico::getValorItem)
+                .map(BigDecimal::valueOf)
+                .orElseThrow(() -> new RegraNegocioException("Serviço não existente!"));
     }
 
     public void validar(Servico servico) {
