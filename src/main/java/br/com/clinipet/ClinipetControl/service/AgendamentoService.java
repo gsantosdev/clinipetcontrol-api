@@ -51,12 +51,10 @@ public class AgendamentoService {
         return agendamentoRepository.findAll();
     }
 
-    private void validar(Agendamento agendamento) {
+    public void validar(Agendamento agendamento) {
 
         List<Agendamento> agendamentos = agendamentoRepository.findExistentAgendamentosByRange(agendamento.getDataInicio(),
                 agendamento.getDataFim(), agendamento.getFuncionario().getId(), agendamento.getAnimal().getId());
-
-
 
         if (!agendamentos.isEmpty()) {
             throw new RegraNegocioException("O funcionário(a) ou o animal já possui um agendamento no mesmo horário.");

@@ -2,6 +2,7 @@ package br.com.clinipet.ClinipetControl.service;
 
 import br.com.clinipet.ClinipetControl.controller.dto.request.VendaDTO;
 import br.com.clinipet.ClinipetControl.controller.mapper.AgendamentoMapper;
+import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Agendamento;
 import br.com.clinipet.ClinipetControl.model.entity.ItemVenda;
 import br.com.clinipet.ClinipetControl.model.entity.Venda;
@@ -44,6 +45,11 @@ public class VendaService {
         venda.getItensVenda().forEach(itemVenda -> itemVenda.setVenda(venda));
 
         return vendaRepository.save(venda);
+    }
+
+
+    public Venda obterVenda(Long id){
+        return vendaRepository.findById(id).orElseThrow(() -> new RegraNegocioException("Venda não encontrada"));
     }
 
 }

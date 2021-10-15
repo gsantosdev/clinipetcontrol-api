@@ -8,6 +8,7 @@ import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Agendamento;
 import br.com.clinipet.ClinipetControl.service.AgendamentoService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,6 +26,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/agendamentos")
 @RequiredArgsConstructor
+@Log4j2
 public class AgendamentoController {
 
     private final AgendamentoService agendamentoService;
@@ -93,6 +95,21 @@ public class AgendamentoController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(listagem);
+    }
+
+    @PostMapping("/validar")
+    public ResponseEntity validarAgendamento(@RequestBody AgendamentoRequestDTO dto) {
+
+        log.info("AgendamentoRequestDTO{}", dto);
+        try {
+            Agendamento agendamento = agendamentoMapper.toEntity(dto);
+            agendamentoService.validar(agendamento);
+
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
     }
 
 }
