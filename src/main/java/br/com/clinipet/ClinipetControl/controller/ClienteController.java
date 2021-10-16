@@ -102,7 +102,7 @@ public class ClienteController {
     }
 
     @GetMapping("/{id}/animais")
-    public ResponseEntity listarAnimais(@PathVariable("id") Long id) {
+    public ResponseEntity listarAnimaisPorIdCliente(@PathVariable("id") Long id) {
         return clienteService.obterPorId(id).map(cliente -> {
             List<Animal> animais = clienteService.obterAnimais(cliente);
             if (animais.isEmpty()) {
