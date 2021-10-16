@@ -4,6 +4,7 @@ package br.com.clinipet.ClinipetControl.controller;
 import br.com.clinipet.ClinipetControl.controller.dto.request.AgendamentoRequestDTO;
 import br.com.clinipet.ClinipetControl.controller.dto.response.AgendamentoResponseDTO;
 import br.com.clinipet.ClinipetControl.controller.mapper.AgendamentoMapper;
+import br.com.clinipet.ClinipetControl.exception.AgendamentoException;
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Agendamento;
 import br.com.clinipet.ClinipetControl.service.AgendamentoService;
@@ -43,8 +44,9 @@ public class AgendamentoController {
             return ResponseEntity.status(HttpStatus.CREATED).body(agendamento);
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (AgendamentoException e) {
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(e.getMessage());
         }
-
     }
 
     @PutMapping("/{id}")
@@ -108,6 +110,8 @@ public class AgendamentoController {
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (AgendamentoException e) {
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(e.getMessage());
         }
 
     }
