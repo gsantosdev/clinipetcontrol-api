@@ -19,4 +19,6 @@ public class VendaDTO {
 
     private StatusVendaEnum status;
 
+    private Long idCliente;
+
 }

@@ -4,6 +4,7 @@ import br.com.clinipet.ClinipetControl.controller.dto.request.VendaDTO;
 import br.com.clinipet.ClinipetControl.controller.mapper.AgendamentoMapper;
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Agendamento;
+import br.com.clinipet.ClinipetControl.model.entity.Cliente;
 import br.com.clinipet.ClinipetControl.model.entity.ItemVenda;
 import br.com.clinipet.ClinipetControl.model.entity.Venda;
 import br.com.clinipet.ClinipetControl.model.enums.StatusVendaEnum;
@@ -16,6 +17,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -23,6 +25,8 @@ import java.util.List;
 public class VendaService {
 
     private final VendaRepository vendaRepository;
+
+    private final ClienteService clienteService;
 
     private final AgendamentoService agendamentoService;
 
@@ -44,12 +48,29 @@ public class VendaService {
 
         venda.getItensVenda().forEach(itemVenda -> itemVenda.setVenda(venda));
 
+        Cliente clienteVenda = Optional.ofNullable(vendaDTO.getIdCliente())
+                .flatMap(clienteService::obterPorId)
+                .orElseThrow(() -> new RegraNegocioException("Cliente não encontrado!"));
+
+        venda.setCliente(clienteVenda);
+
         return vendaRepository.save(venda);
     }
 
 
-    public Venda obterVenda(Long id){
+    public Venda obterVenda(Long id) {
         return vendaRepository.findById(id).orElseThrow(() -> new RegraNegocioException("Venda não encontrada"));
+    }
+
+    public List<Venda> listarTodas() {
+        return vendaRepository.findAll();
+    }
+
+    public List<Venda> listarTodasPorIdCliente(Long id) {
+
+        return clienteService.obterPorId(id)
+                .map(vendaRepository::findAllByCliente)
+                .orElseThrow(() -> new RegraNegocioException("Cliente não encontrado!"));
     }
 
 }

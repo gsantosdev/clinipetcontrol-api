@@ -18,6 +18,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -54,6 +56,12 @@ public class Venda {
     @JsonIgnoreProperties("venda")
     @OneToMany(mappedBy = "venda", targetEntity = ItemVenda.class, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<ItemVenda> itensVenda;
+
+
+    @JsonIgnoreProperties("venda")
+    @ManyToOne
+    @JoinColumn(name = "idCliente")
+    private Cliente cliente;
 
     @PreUpdate
     @PrePersist
