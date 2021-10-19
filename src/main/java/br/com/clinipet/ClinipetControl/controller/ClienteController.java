@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -104,7 +105,7 @@ public class ClienteController {
     @GetMapping("/{id}/animais")
     public ResponseEntity listarAnimaisPorIdCliente(@PathVariable("id") Long id) {
         return clienteService.obterPorId(id).map(cliente -> {
-            List<Animal> animais = clienteService.obterAnimais(cliente);
+            List<Map<String, Object>> animais = clienteService.obterNomesAnimais(cliente);
             if (animais.isEmpty()) {
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }

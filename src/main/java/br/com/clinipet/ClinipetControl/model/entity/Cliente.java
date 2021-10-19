@@ -66,10 +66,5 @@ public class Cliente {
     private List<Animal> animais = new ArrayList<>();
 
 
-    @ToString.Exclude
-    @JsonBackReference
-    @JsonIgnoreProperties("cliente")
-    @OneToMany(mappedBy = "cliente", targetEntity = Animal.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Venda> vendas;
 
 }

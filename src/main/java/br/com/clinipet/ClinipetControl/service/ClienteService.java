@@ -10,9 +10,12 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -75,6 +78,20 @@ public class ClienteService {
         }
 
         return animais;
+    }
+
+    public List<Map<String, Object>> obterNomesAnimais(Cliente cliente) {
+
+        List<Map<String, Object>> listaNomes = new ArrayList<>();
+        obterAnimais(cliente).forEach(animal -> {
+            Map<String, Object> nomesAnimais = new HashMap<>();
+            nomesAnimais.put("label", animal.getNome());
+            nomesAnimais.put("value", animal.getId());
+
+            listaNomes.add(nomesAnimais);
+        });
+
+        return listaNomes;
     }
 
     @Transactional

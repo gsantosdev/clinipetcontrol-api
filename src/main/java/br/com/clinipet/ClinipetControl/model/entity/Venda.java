@@ -3,6 +3,7 @@ package br.com.clinipet.ClinipetControl.model.entity;
 import br.com.clinipet.ClinipetControl.model.enums.StatusVendaEnum;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,7 +25,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -58,7 +58,8 @@ public class Venda {
     private List<ItemVenda> itensVenda;
 
 
-    @JsonIgnoreProperties("venda")
+    @JsonIgnoreProperties("vendas")
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "idCliente")
     private Cliente cliente;
