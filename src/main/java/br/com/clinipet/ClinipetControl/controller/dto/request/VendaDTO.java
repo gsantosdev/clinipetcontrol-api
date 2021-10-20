@@ -1,6 +1,7 @@
 package br.com.clinipet.ClinipetControl.controller.dto.request;
 
 
+import br.com.clinipet.ClinipetControl.model.entity.Usuario;
 import br.com.clinipet.ClinipetControl.model.enums.StatusVendaEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,5 +21,7 @@ public class VendaDTO {
     private StatusVendaEnum status;
 
     private Long idCliente;
+
+    private Long idUsuario;
 
 }

@@ -6,13 +6,16 @@ import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Agendamento;
 import br.com.clinipet.ClinipetControl.model.entity.Cliente;
 import br.com.clinipet.ClinipetControl.model.entity.ItemVenda;
+import br.com.clinipet.ClinipetControl.model.entity.Lancamento;
 import br.com.clinipet.ClinipetControl.model.entity.Venda;
 import br.com.clinipet.ClinipetControl.model.enums.StatusVendaEnum;
+import br.com.clinipet.ClinipetControl.model.enums.TipoLancamentoEnum;
 import br.com.clinipet.ClinipetControl.model.repository.VendaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -28,12 +31,17 @@ public class VendaService {
 
     private final ClienteService clienteService;
 
+    private final UsuarioService usuarioService;
+
+    private final LancamentoService lancamentoService;
+
     private final AgendamentoService agendamentoService;
 
     private final AgendamentoMapper agendamentoMapper;
 
     @Transactional
     public Venda efetuarVenda(VendaDTO vendaDTO) {
+
 
         List<ItemVenda> itemList = new ArrayList<>();
 
@@ -54,7 +62,19 @@ public class VendaService {
 
         venda.setCliente(clienteVenda);
 
-        return vendaRepository.save(venda);
+        vendaRepository.save(venda);
+
+
+
+        lancamentoService.salvar(Lancamento.builder()
+                .descricao("Venda de serviço")
+                .usuario(usuarioService.obterPorId(vendaDTO.getIdUsuario()).orElseThrow(() -> new RegraNegocioException("Usuario não encontrado.")))
+                .tipo(TipoLancamentoEnum.RECEITA)
+                .dataCriacao(Date.valueOf(LocalDate.now()))
+                .valor(BigDecimal.valueOf(venda.getValorTotal()))
+                .build());
+
+        return venda;
     }
 
 
