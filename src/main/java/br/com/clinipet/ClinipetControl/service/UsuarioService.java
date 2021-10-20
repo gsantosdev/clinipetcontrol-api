@@ -56,7 +56,6 @@ public class UsuarioService {
         return repository.findById(id);
     }
 
-
     public List<Usuario> obterTodosPorNome(String nome) {
         return repository.findAllByNome(nome);
     }

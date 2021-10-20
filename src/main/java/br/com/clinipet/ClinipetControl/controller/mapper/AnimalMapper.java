@@ -16,7 +16,6 @@ import static org.mapstruct.ReportingPolicy.IGNORE;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = IGNORE)
 public abstract class AnimalMapper {
 
-
      @Autowired
      private ClienteService clienteService;
 
