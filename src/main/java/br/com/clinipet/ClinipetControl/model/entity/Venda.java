@@ -41,9 +41,6 @@ public class Venda {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(value = EnumType.STRING)
-    private StatusVendaEnum status;
-
     @CreatedDate
     @Column(name = "data_criacao", nullable = false, updatable = false)
     private Date dataCriacao;
@@ -51,9 +48,7 @@ public class Venda {
     private double valorTotal;
 
 
-    @ToString.Exclude
     @JsonBackReference
-    @JsonIgnoreProperties("venda")
     @OneToMany(mappedBy = "venda", targetEntity = ItemVenda.class, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<ItemVenda> itensVenda;
 
@@ -63,6 +58,8 @@ public class Venda {
     @ManyToOne
     @JoinColumn(name = "idCliente")
     private Cliente cliente;
+
+    private String tipo;
 
     @PreUpdate
     @PrePersist

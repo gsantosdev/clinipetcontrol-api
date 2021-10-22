@@ -7,8 +7,9 @@ import br.com.clinipet.ClinipetControl.model.entity.Agendamento;
 import br.com.clinipet.ClinipetControl.model.entity.Cliente;
 import br.com.clinipet.ClinipetControl.model.entity.ItemVenda;
 import br.com.clinipet.ClinipetControl.model.entity.Lancamento;
+import br.com.clinipet.ClinipetControl.model.entity.Servico;
 import br.com.clinipet.ClinipetControl.model.entity.Venda;
-import br.com.clinipet.ClinipetControl.model.enums.StatusVendaEnum;
+import br.com.clinipet.ClinipetControl.model.entity.dao.ordemDeServicoDAO;
 import br.com.clinipet.ClinipetControl.model.enums.TipoLancamentoEnum;
 import br.com.clinipet.ClinipetControl.model.repository.VendaRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,8 @@ public class VendaService {
 
     private final UsuarioService usuarioService;
 
+    private final ServicoService servicoService;
+
     private final LancamentoService lancamentoService;
 
     private final AgendamentoService agendamentoService;
@@ -40,11 +43,13 @@ public class VendaService {
     private final AgendamentoMapper agendamentoMapper;
 
     @Transactional
-    public Venda efetuarVenda(VendaDTO vendaDTO) {
+    public Venda efetuarVendaServico(VendaDTO vendaDTO) {
 
 
         List<ItemVenda> itemList = new ArrayList<>();
 
+
+        //Cria venda de serviço
         vendaDTO.getItensVenda().forEach(itemVendaDTO -> {
 
             Agendamento agendamento = agendamentoMapper.toEntity(itemVendaDTO.getAgendamento());
@@ -52,7 +57,7 @@ public class VendaService {
             itemList.add(ItemVenda.builder().agendamento(agendamentoSalvo).quantidade(itemVendaDTO.getQuantidade()).build());
         });
 
-        Venda venda = Venda.builder().itensVenda(itemList).dataCriacao(Date.valueOf(LocalDate.now())).status(StatusVendaEnum.PENDENTE).build();
+        Venda venda = Venda.builder().tipo("servico").itensVenda(itemList).dataCriacao(Date.valueOf(LocalDate.now())).build();
 
         venda.getItensVenda().forEach(itemVenda -> itemVenda.setVenda(venda));
 
@@ -64,10 +69,30 @@ public class VendaService {
 
         vendaRepository.save(venda);
 
+        //Achar serviço
+        StringBuilder servicos = new StringBuilder();
+        List<Servico> servicoList = new ArrayList<>();
+
+        vendaDTO.getItensVenda()
+                .forEach(itemVendaDTO -> servicoService
+                        .obterPorId(itemVendaDTO.getAgendamento().getIdServico())
+                        .map(servicoList::add)
+                        .orElseThrow(() -> new RegraNegocioException("Serviço não encontrado!")));
 
 
+        //Adiciona nome dos serviços na ordem de serviço
+        servicoList.forEach(servico -> {
+            if (servicos.isEmpty()) {
+                servicos.append(servico.getNome());
+            } else {
+                servicos.append(" + ").append(servico.getNome());
+            }
+        });
+
+        //Salva o lançamento da venda efetuada
         lancamentoService.salvar(Lancamento.builder()
-                .descricao("Venda de serviço")
+                .descricao(servicos.toString())
+                .venda(venda)
                 .usuario(usuarioService.obterPorId(vendaDTO.getIdUsuario()).orElseThrow(() -> new RegraNegocioException("Usuario não encontrado.")))
                 .tipo(TipoLancamentoEnum.RECEITA)
                 .dataCriacao(Date.valueOf(LocalDate.now()))
@@ -77,9 +102,13 @@ public class VendaService {
         return venda;
     }
 
+    public List<ItemVenda> obterItensDaVenda(Long id) {
+        return obterVenda(id).getItensVenda();
+    }
 
     public Venda obterVenda(Long id) {
-        return vendaRepository.findById(id).orElseThrow(() -> new RegraNegocioException("Venda não encontrada"));
+        return vendaRepository.findById(id)
+                .orElseThrow(() -> new RegraNegocioException("Venda não encontrada"));
     }
 
     public List<Venda> listarTodas() {
@@ -92,5 +121,10 @@ public class VendaService {
                 .map(vendaRepository::findAllByCliente)
                 .orElseThrow(() -> new RegraNegocioException("Cliente não encontrado!"));
     }
+
+    public List<ordemDeServicoDAO> listarOrdensPorCliente(String busca){
+        return vendaRepository.findOrdensByCliente(busca);
+    }
+
 
 }

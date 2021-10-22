@@ -51,5 +51,8 @@ public class Lancamento {
     @Enumerated(value = EnumType.STRING)
     private StatusLancamentoEnum status;
 
+    @ManyToOne
+    @JoinColumn(name = "id_venda")
+    private Venda venda;
 
 }
