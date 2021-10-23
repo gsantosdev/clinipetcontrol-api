@@ -5,6 +5,6 @@ public enum StatusLancamentoEnum {
     PENDENTE,
     CANCELADO,
     EM_EXECUCAO,
-    EFETIVADO
+    CONCLUIDO
 
 }
