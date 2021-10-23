@@ -50,8 +50,8 @@ public class LancamentoService {
 
     public BigDecimal obterSaldo() {
 
-        BigDecimal receitas = lancamentoRepository.obterSaldoPorTipoLancamentoStatus(TipoLancamentoEnum.RECEITA, StatusLancamentoEnum.EFETIVADO);
-        BigDecimal despesas = lancamentoRepository.obterSaldoPorTipoLancamentoStatus(TipoLancamentoEnum.DESPESA, StatusLancamentoEnum.EFETIVADO);
+        BigDecimal receitas = lancamentoRepository.obterSaldoPorTipoLancamentoStatus(TipoLancamentoEnum.RECEITA, StatusLancamentoEnum.CONCLUIDO);
+        BigDecimal despesas = lancamentoRepository.obterSaldoPorTipoLancamentoStatus(TipoLancamentoEnum.DESPESA, StatusLancamentoEnum.CONCLUIDO);
 
         if (receitas == null) {
             receitas = BigDecimal.ZERO;

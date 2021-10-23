@@ -17,8 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
-import java.sql.Date;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -57,7 +56,7 @@ public class VendaService {
             itemList.add(ItemVenda.builder().agendamento(agendamentoSalvo).quantidade(itemVendaDTO.getQuantidade()).build());
         });
 
-        Venda venda = Venda.builder().tipo("servico").itensVenda(itemList).dataCriacao(Date.valueOf(LocalDate.now())).build();
+        Venda venda = Venda.builder().tipo("servico").itensVenda(itemList).dataCriacao(LocalDateTime.now()).build();
 
         venda.getItensVenda().forEach(itemVenda -> itemVenda.setVenda(venda));
 
@@ -95,7 +94,7 @@ public class VendaService {
                 .venda(venda)
                 .usuario(usuarioService.obterPorId(vendaDTO.getIdUsuario()).orElseThrow(() -> new RegraNegocioException("Usuario não encontrado.")))
                 .tipo(TipoLancamentoEnum.RECEITA)
-                .dataCriacao(Date.valueOf(LocalDate.now()))
+                .dataCriacao(LocalDateTime.now())
                 .valor(BigDecimal.valueOf(venda.getValorTotal()))
                 .build());
 

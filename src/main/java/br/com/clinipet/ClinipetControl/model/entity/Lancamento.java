@@ -20,7 +20,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -43,7 +43,7 @@ public class Lancamento {
 
     @CreatedDate
     @Column(name = "data_criacao", nullable = false, updatable = false)
-    private Date dataCriacao;
+    private LocalDateTime dataCriacao;
 
     @Enumerated(value = EnumType.STRING)
     private TipoLancamentoEnum tipo;

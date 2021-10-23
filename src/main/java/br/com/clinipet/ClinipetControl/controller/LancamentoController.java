@@ -77,10 +77,5 @@ public class LancamentoController {
         BigDecimal caixa = lancamentoService.obterSaldo();
 
         return ResponseEntity.ok(caixa);
-
     }
-
-
-
-
 }
