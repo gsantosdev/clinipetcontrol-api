@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -29,18 +30,22 @@ public class Servico {
 
     private String observacoes;
 
-    private double valorBase;
 
-    private double margemLucro;
+    @Column(precision = 10, scale = 2)
+    private Double valorBase;
 
-    private double valorItem;
+    @Column(precision = 10, scale = 2)
+    private Double margemLucro;
 
+    @Column(precision = 10, scale = 2)
+    private Double valorItem;
 
 
     @PreUpdate
     @PrePersist
     public void calcValorTotal() {
-        valorItem = valorBase * margemLucro;
+        valorItem = valorBase * (margemLucro / 100);
+
     }
 
 

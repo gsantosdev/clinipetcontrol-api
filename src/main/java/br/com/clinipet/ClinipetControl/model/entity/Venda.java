@@ -40,6 +40,7 @@ public class Venda {
     @Column(name = "data_criacao", nullable = false, updatable = false)
     private LocalDateTime dataCriacao;
 
+    @Column(precision=10, scale=2)
     private double valorTotal;
 
 
