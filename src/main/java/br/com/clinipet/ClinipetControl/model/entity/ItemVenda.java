@@ -34,6 +34,10 @@ public class ItemVenda {
     private Agendamento agendamento;
 
     @ManyToOne
+    @JoinColumn(name = "idProduto")
+    private Produto produto;
+
+    @ManyToOne
     @JoinColumn(name = "idVenda")
     private Venda venda;
 
