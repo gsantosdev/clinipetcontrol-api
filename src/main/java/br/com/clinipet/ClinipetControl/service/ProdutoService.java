@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -31,6 +32,7 @@ public class ProdutoService {
         return produtoRepository.save(produto);
     }
 
+
     @Transactional
     public void deletar(Produto produto) {
         Objects.requireNonNull(produto.getId());
@@ -45,28 +47,26 @@ public class ProdutoService {
     }
 
     @Transactional
-    public Produto baixaEstoque(Long id) {
+    public Produto baixaEstoque(Long id, Long quantidade) {
         Objects.requireNonNull(id);
 
         Produto produto = obterPorId(id).orElseThrow(() -> new RegraNegocioException("Produto não encontrado"));
 
-        produto.baixaEstoque();
+        produto.baixaEstoque(quantidade);
 
         return produtoRepository.save(produto);
-
 
     }
 
     @Transactional
-    public Produto entradaEstoque(Long id) {
+    public Produto entradaEstoque(Long id, Long quantidade) {
         Objects.requireNonNull(id);
 
         Produto produto = obterPorId(id).orElseThrow(() -> new RegraNegocioException("Produto não encontrado"));
 
-        produto.entradaEstoque();
+        produto.entradaEstoque(quantidade);
 
         return produtoRepository.save(produto);
-
 
     }
 
@@ -81,5 +81,8 @@ public class ProdutoService {
         return produto.statusEstoque();
     }
 
+    public List<Produto> obterProdutoPorNome(String busca) {
+        return produtoRepository.findByNomeOrMarca(busca);
+    }
 
 }

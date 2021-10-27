@@ -5,6 +5,7 @@ import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Funcionario;
 import br.com.clinipet.ClinipetControl.service.FuncionarioService;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -76,6 +77,11 @@ public class FuncionarioController {
 
     @GetMapping
     public ResponseEntity obterPorNomeTelefoneCpf(@RequestParam String busca) {
+
+        if (busca == null || busca.equals(Strings.EMPTY)) {
+            return ResponseEntity.badRequest().body("A busca não pode estar vazia");
+        }
+
         Optional<List<Funcionario>> funcionario = funcionarioService.obterFuncionarioPorNomeTelefone(busca);
 
         if (funcionario.isEmpty()) {

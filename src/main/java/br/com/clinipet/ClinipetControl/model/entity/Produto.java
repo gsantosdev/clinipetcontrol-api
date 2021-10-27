@@ -32,6 +32,8 @@ public class Produto {
 
     private String nome;
 
+    private String marca;
+
     @Column(precision=10, scale=2)
     private double valorBase;
 
@@ -54,16 +56,19 @@ public class Produto {
         valorItem = valorBase * (margemLucro / 100);
     }
 
-    public void baixaEstoque() {
+    public void baixaEstoque(Long quantidade) {
 
         if (quantidadeEstoque == 0) {
             throw new RegraNegocioException("Estoque do produto já esgotado!");
         }
-        quantidadeEstoque -= 1;
+        if (quantidadeEstoque - quantidade < 0){
+            throw new RegraNegocioException("A quantidade em estoque não pode ser menor do que 0!");
+        }
+        quantidadeEstoque -= quantidade;
     }
 
-    public void entradaEstoque() {
-        quantidadeEstoque += 1;
+    public void entradaEstoque(Long quantidade) {
+        quantidadeEstoque += quantidade;
     }
 
     public StatusEstoqueEnum statusEstoque() {

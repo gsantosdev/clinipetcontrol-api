@@ -9,6 +9,7 @@ import br.com.clinipet.ClinipetControl.model.entity.Cliente;
 import br.com.clinipet.ClinipetControl.service.AnimalService;
 import br.com.clinipet.ClinipetControl.service.ClienteService;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -75,6 +76,11 @@ public class AnimalController {
 
     @GetMapping
     public ResponseEntity obterPorNome(@RequestParam("busca") String busca) {
+
+        if(busca == null || busca.equals(Strings.EMPTY) ){
+            return ResponseEntity.badRequest().body("A busca não pode estar vazia");
+        }
+
         List<Animal> animal = animalService.obterPorNome(busca);
 
         if (animal.isEmpty()) {

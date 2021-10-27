@@ -40,7 +40,7 @@ public class Venda {
     @Column(name = "data_criacao", nullable = false, updatable = false)
     private LocalDateTime dataCriacao;
 
-    @Column(precision=10, scale=2)
+    @Column(precision = 10, scale = 2)
     private double valorTotal;
 
 
@@ -60,7 +60,13 @@ public class Venda {
     @PreUpdate
     @PrePersist
     public void calcValorTotal() {
+        itensVenda.forEach(item -> {
 
-        itensVenda.forEach(item -> valorTotal += item.getAgendamento().getServico().getValorItem() * item.getQuantidade());
+            if (item.getAgendamento() != null){
+                valorTotal += item.getAgendamento().getServico().getValorItem() * item.getQuantidade();
+            }
+            valorTotal += item.getProduto().getValorItem() * item.getQuantidade();
+
+        });
     }
 }

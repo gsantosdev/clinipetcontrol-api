@@ -29,10 +29,22 @@ public class VendaController {
 
     private final VendaService vendaService;
 
-    @PostMapping
-    public ResponseEntity cadastrar(@RequestBody VendaDTO vendaDTO) {
+    @PostMapping("/servico")
+    public ResponseEntity cadastrarOrdemServico(@RequestBody VendaDTO vendaDTO) {
         try {
             Venda vendaSalva = vendaService.efetuarVendaServico(vendaDTO);
+            return new ResponseEntity(vendaSalva, HttpStatus.ACCEPTED);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (AgendamentoException e) {
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/produto")
+    public ResponseEntity cadastrarVendaProduto(@RequestBody VendaDTO vendaDTO) {
+        try {
+            Venda vendaSalva = vendaService.efetuarVendaProduto(vendaDTO);
             return new ResponseEntity(vendaSalva, HttpStatus.ACCEPTED);
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

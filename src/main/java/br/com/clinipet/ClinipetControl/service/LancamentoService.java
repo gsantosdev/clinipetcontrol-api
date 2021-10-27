@@ -23,7 +23,11 @@ public class LancamentoService {
     @Transactional
     public Lancamento salvar(Lancamento lancamento) {
         validar(lancamento);
-        lancamento.setStatus(StatusLancamentoEnum.PENDENTE);
+        if (lancamento.getStatus() == null) {
+            lancamento.setStatus(StatusLancamentoEnum.PENDENTE);
+        } else {
+            lancamento.setStatus(StatusLancamentoEnum.CONCLUIDO);
+        }
         return lancamentoRepository.save(lancamento);
     }
 

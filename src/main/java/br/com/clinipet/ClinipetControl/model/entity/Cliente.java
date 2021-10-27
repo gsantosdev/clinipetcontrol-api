@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.SQLDelete;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -29,6 +30,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "cliente")
+//@SQLDelete(sql = "UPDATE cliente SET ativo = false WHERE id = ?")
 public class Cliente {
 
     @Id
@@ -59,12 +61,14 @@ public class Cliente {
 
     private String uf;
 
+    //private Boolean ativo;
+
     @ToString.Exclude
     @JsonBackReference
     @JsonIgnoreProperties("cliente")
     @OneToMany(mappedBy = "cliente", targetEntity = Animal.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
     private List<Animal> animais = new ArrayList<>();
-
 
 
 }

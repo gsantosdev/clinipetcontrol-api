@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -40,5 +39,6 @@ public class ItemVenda {
     @ManyToOne
     @JoinColumn(name = "idVenda")
     private Venda venda;
+
 
 }

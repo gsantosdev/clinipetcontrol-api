@@ -7,9 +7,11 @@ import br.com.clinipet.ClinipetControl.model.entity.Agendamento;
 import br.com.clinipet.ClinipetControl.model.entity.Cliente;
 import br.com.clinipet.ClinipetControl.model.entity.ItemVenda;
 import br.com.clinipet.ClinipetControl.model.entity.Lancamento;
+import br.com.clinipet.ClinipetControl.model.entity.Produto;
 import br.com.clinipet.ClinipetControl.model.entity.Servico;
 import br.com.clinipet.ClinipetControl.model.entity.Venda;
 import br.com.clinipet.ClinipetControl.model.entity.dao.ordemDeServicoDAO;
+import br.com.clinipet.ClinipetControl.model.enums.StatusLancamentoEnum;
 import br.com.clinipet.ClinipetControl.model.enums.TipoLancamentoEnum;
 import br.com.clinipet.ClinipetControl.model.repository.VendaRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,18 +37,54 @@ public class VendaService {
 
     private final ServicoService servicoService;
 
+    private final ProdutoService produtoService;
+
     private final LancamentoService lancamentoService;
 
     private final AgendamentoService agendamentoService;
 
     private final AgendamentoMapper agendamentoMapper;
 
-    @Transactional
-    public Venda efetuarVendaServico(VendaDTO vendaDTO) {
 
+    @Transactional
+    public Venda efetuarVendaProduto(VendaDTO vendaDTO) {
 
         List<ItemVenda> itemList = new ArrayList<>();
 
+        //Cria venda de produto
+        vendaDTO.getItensVenda().forEach(itemVendaDTO -> {
+
+            Produto produto = produtoService.obterPorId(itemVendaDTO.getIdProduto()).orElseThrow(() -> new RegraNegocioException("O produto não existe!"));
+            itemList.add(ItemVenda.builder().produto(produto).quantidade(itemVendaDTO.getQuantidade()).build());
+        });
+
+        Venda venda = Venda.builder().tipo("produto").itensVenda(itemList).dataCriacao(LocalDateTime.now()).build();
+
+        venda.getItensVenda().forEach(itemVenda -> itemVenda.setVenda(venda));
+
+
+        Venda vendaSalva = vendaRepository.save(venda);
+
+
+        //Salva o lançamento da venda efetuada
+        lancamentoService.salvar(Lancamento.builder()
+                .descricao("Venda de produto")
+                .venda(vendaSalva)
+                .status(StatusLancamentoEnum.CONCLUIDO)
+                .usuario(usuarioService.obterPorId(vendaDTO.getIdUsuario()).orElseThrow(() -> new RegraNegocioException("Usuario não encontrado.")))
+                .tipo(TipoLancamentoEnum.RECEITA)
+                .dataCriacao(LocalDateTime.now())
+                .valor(BigDecimal.valueOf(venda.getValorTotal()))
+                .build());
+
+        return vendaSalva;
+    }
+
+
+    @Transactional
+    public Venda efetuarVendaServico(VendaDTO vendaDTO) {
+
+        List<ItemVenda> itemList = new ArrayList<>();
 
         //Cria venda de serviço
         vendaDTO.getItensVenda().forEach(itemVendaDTO -> {
@@ -121,7 +159,7 @@ public class VendaService {
                 .orElseThrow(() -> new RegraNegocioException("Cliente não encontrado!"));
     }
 
-    public List<ordemDeServicoDAO> listarOrdensPorCliente(String busca){
+    public List<ordemDeServicoDAO> listarOrdensPorCliente(String busca) {
         return vendaRepository.findOrdensByCliente(busca);
     }
 

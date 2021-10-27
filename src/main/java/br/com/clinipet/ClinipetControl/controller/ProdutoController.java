@@ -2,10 +2,12 @@ package br.com.clinipet.ClinipetControl.controller;
 
 
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
+import br.com.clinipet.ClinipetControl.model.entity.Cliente;
 import br.com.clinipet.ClinipetControl.model.entity.Produto;
 import br.com.clinipet.ClinipetControl.model.enums.StatusEstoqueEnum;
 import br.com.clinipet.ClinipetControl.service.ProdutoService;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,9 +17,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -82,10 +86,29 @@ public class ProdutoController {
         }
     }
 
+    @GetMapping
+    public ResponseEntity obterPorNome(@RequestParam String busca) {
+
+        if(busca == null || busca.equals(Strings.EMPTY) ){
+            return ResponseEntity.badRequest().body("A busca não pode estar vazia");
+        }
+
+        List<Produto> produtos = produtoService.obterProdutoPorNome(busca);
+
+        if (produtos.isEmpty()) {
+            return new ResponseEntity("Produto não encontrado!",HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(produtos);
+
+    }
+
     @PostMapping("/{id}/baixaEstoque")
-    public ResponseEntity baixaEstoque(@PathVariable("id") Long id) {
+    public ResponseEntity baixaEstoque(@PathVariable("id") Long id, @RequestParam(value = "quantidade", required = false) Long quantidade) {
+        if (quantidade == null) {
+            quantidade = 1L;
+        }
         try {
-            Produto produto = produtoService.baixaEstoque(id);
+            Produto produto = produtoService.baixaEstoque(id, quantidade);
             return new ResponseEntity(produto, HttpStatus.OK);
         } catch (RegraNegocioException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -93,9 +116,14 @@ public class ProdutoController {
     }
 
     @PostMapping("/{id}/entradaEstoque")
-    public ResponseEntity entradaEstoque(@PathVariable("id") Long id) {
+    public ResponseEntity entradaEstoque(@PathVariable("id") Long id, @RequestParam(value = "quantidade", required = false) Long quantidade) {
+
+        if (quantidade == null) {
+            quantidade = 1L;
+        }
+
         try {
-            Produto produto = produtoService.entradaEstoque(id);
+            Produto produto = produtoService.entradaEstoque(id, quantidade);
             return new ResponseEntity(produto, HttpStatus.OK);
         } catch (RegraNegocioException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);

@@ -7,6 +7,7 @@ import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Usuario;
 import br.com.clinipet.ClinipetControl.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -89,6 +90,11 @@ public class UsuarioController {
 
     @GetMapping
     public ResponseEntity obterPorNomeTodos(@RequestParam("busca") String busca) {
+
+        if (busca == null || busca.equals(Strings.EMPTY)) {
+            return ResponseEntity.badRequest().body("A busca não pode estar vazia");
+        }
+
         List<Usuario> usuario = usuarioService.obterTodosPorNome(busca);
 
         if (usuario.isEmpty()) {
