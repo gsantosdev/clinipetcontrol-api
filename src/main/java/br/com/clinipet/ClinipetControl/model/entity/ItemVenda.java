@@ -26,7 +26,7 @@ public class ItemVenda {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer quantidade;
+    private Long quantidade;
 
     @ManyToOne
     @JoinColumn(name = "idAgendamento")

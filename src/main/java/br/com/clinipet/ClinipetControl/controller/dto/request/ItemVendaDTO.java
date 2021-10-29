@@ -19,5 +19,5 @@ public class ItemVendaDTO {
     @Nullable
     private Long idProduto;
 
-    private Integer quantidade;
+    private Long quantidade;
 }
