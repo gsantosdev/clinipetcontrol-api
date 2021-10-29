@@ -55,6 +55,9 @@ public class Venda {
     @JoinColumn(name = "idCliente")
     private Cliente cliente;
 
+    private String cpf;
+
+
     private String tipo;
 
     @PreUpdate
