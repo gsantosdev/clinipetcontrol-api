@@ -51,10 +51,11 @@ public class VendaService {
 
         List<ItemVenda> itemList = new ArrayList<>();
 
-        //Cria venda de produto
+        //Cria venda de produto e ja faz baixa no estoque
         vendaDTO.getItensVenda().forEach(itemVendaDTO -> {
 
             Produto produto = produtoService.obterPorId(itemVendaDTO.getIdProduto()).orElseThrow(() -> new RegraNegocioException("O produto não existe!"));
+            produtoService.baixaEstoque(produto.getId(), itemVendaDTO.getQuantidade());
             itemList.add(ItemVenda.builder().produto(produto).quantidade(itemVendaDTO.getQuantidade()).build());
         });
 
@@ -64,6 +65,9 @@ public class VendaService {
 
 
         Venda vendaSalva = vendaRepository.save(venda);
+
+
+        //Baixa no estoque
 
 
         //Salva o lançamento da venda efetuada
