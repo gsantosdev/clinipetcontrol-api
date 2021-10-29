@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.Objects;
@@ -83,6 +84,12 @@ public class ProdutoService {
 
     public List<Produto> obterProdutoPorNome(String busca) {
         return produtoRepository.findByNomeOrMarca(busca);
+    }
+
+    public BigDecimal obterValorVenda(Long id) {
+        return obterPorId(id).map(Produto::getValorItem)
+                .map(BigDecimal::valueOf)
+                .orElseThrow(() -> new RegraNegocioException("Produto não existente!"));
     }
 
 }

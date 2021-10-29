@@ -2,7 +2,6 @@ package br.com.clinipet.ClinipetControl.controller;
 
 
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
-import br.com.clinipet.ClinipetControl.model.entity.Cliente;
 import br.com.clinipet.ClinipetControl.model.entity.Produto;
 import br.com.clinipet.ClinipetControl.model.enums.StatusEstoqueEnum;
 import br.com.clinipet.ClinipetControl.service.ProdutoService;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
@@ -89,14 +89,14 @@ public class ProdutoController {
     @GetMapping
     public ResponseEntity obterPorNome(@RequestParam String busca) {
 
-        if(busca == null || busca.equals(Strings.EMPTY) ){
+        if (busca == null || busca.equals(Strings.EMPTY)) {
             return ResponseEntity.badRequest().body("A busca não pode estar vazia");
         }
 
         List<Produto> produtos = produtoService.obterProdutoPorNome(busca);
 
         if (produtos.isEmpty()) {
-            return new ResponseEntity("Produto não encontrado!",HttpStatus.NOT_FOUND);
+            return new ResponseEntity("Produto não encontrado!", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(produtos);
 
@@ -141,4 +141,19 @@ public class ProdutoController {
     }
 
 
+    @GetMapping("/{id}/valor")
+    public ResponseEntity obterValorVendaPorId(@PathVariable("id") Long id) {
+
+        try {
+            BigDecimal servico = produtoService.obterValorVenda(id);
+
+            if (servico == null) {
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
+            }
+            return ResponseEntity.ok(servico);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+
+    }
 }
