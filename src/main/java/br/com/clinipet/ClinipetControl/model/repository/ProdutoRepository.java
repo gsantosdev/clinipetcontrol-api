@@ -12,7 +12,10 @@ import java.util.List;
 @Repository
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
-    @Query(value = "SELECT * FROM Produto WHERE (nome LIKE CONCAT('%', :busca, '%') or marca LIKE CONCAT('%', :busca, '%')) and quantidade_estoque > 0", nativeQuery = true)
+    @Query(value = "SELECT * FROM Produto WHERE nome LIKE CONCAT('%', :busca, '%') or marca LIKE CONCAT('%', :busca, '%')", nativeQuery = true)
     List<Produto> findByNomeOrMarca(@Param("busca") String busca);
+
+    @Query(value = "SELECT * FROM Produto WHERE (nome LIKE CONCAT('%', :busca, '%') or marca LIKE CONCAT('%', :busca, '%')) and quantidade_estoque > 0", nativeQuery = true)
+    List<Produto> findByNomeOrMarcaComEstoque(@Param("busca") String busca);
 
 }

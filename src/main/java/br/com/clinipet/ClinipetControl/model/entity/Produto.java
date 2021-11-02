@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,13 +33,13 @@ public class Produto {
 
     private String marca;
 
-    @Column(precision=10, scale=2)
+    @Column(precision = 10, scale = 2)
     private double valorBase;
 
-    @Column(precision=10, scale=2)
+    @Column(precision = 10, scale = 2)
     private double margemLucro;
 
-    @Column(precision=10, scale=2)
+    @Column(precision = 10, scale = 2)
     private double valorItem;
 
     private Long quantidadeEstoque;
@@ -53,7 +52,7 @@ public class Produto {
     @PreUpdate
     @PrePersist
     public void calcValorTotal() {
-        valorItem = valorBase * (margemLucro / 100);
+        valorItem = valorBase * ((margemLucro / 100) + 1);
     }
 
     public void baixaEstoque(Long quantidade) {
@@ -61,7 +60,7 @@ public class Produto {
         if (quantidadeEstoque == 0) {
             throw new RegraNegocioException("Estoque do produto já esgotado!");
         }
-        if (quantidadeEstoque - quantidade < 0){
+        if (quantidadeEstoque - quantidade < 0) {
             throw new RegraNegocioException("A quantidade em estoque não pode ser menor do que 0!");
         }
         quantidadeEstoque -= quantidade;

@@ -87,13 +87,17 @@ public class ProdutoController {
     }
 
     @GetMapping
-    public ResponseEntity obterPorNome(@RequestParam String busca) {
+    public ResponseEntity obterPorNome(@RequestParam String busca, @RequestParam(required = false, defaultValue = "false") Boolean comEstoque) {
 
         if (busca == null || busca.equals(Strings.EMPTY)) {
             return ResponseEntity.badRequest().body("A busca não pode estar vazia");
         }
 
-        List<Produto> produtos = produtoService.obterProdutoPorNome(busca);
+        List<Produto> produtos = Optional.ofNullable(comEstoque)
+                .filter(value -> value)
+                .map(value -> produtoService.obterProdutoPorNomeComEstoque(busca))
+                .orElse(produtoService.obterProdutoPorNome(busca));
+
 
         if (produtos.isEmpty()) {
             return new ResponseEntity("Produto não encontrado!", HttpStatus.NOT_FOUND);

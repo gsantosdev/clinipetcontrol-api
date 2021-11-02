@@ -86,6 +86,10 @@ public class ProdutoService {
         return produtoRepository.findByNomeOrMarca(busca);
     }
 
+    public List<Produto> obterProdutoPorNomeComEstoque(String busca) {
+        return produtoRepository.findByNomeOrMarcaComEstoque(busca);
+    }
+
     public BigDecimal obterValorVenda(Long id) {
         return obterPorId(id).map(Produto::getValorItem)
                 .map(BigDecimal::valueOf)
