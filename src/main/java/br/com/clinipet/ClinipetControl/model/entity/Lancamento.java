@@ -3,6 +3,7 @@ package br.com.clinipet.ClinipetControl.model.entity;
 
 import br.com.clinipet.ClinipetControl.model.enums.StatusLancamentoEnum;
 import br.com.clinipet.ClinipetControl.model.enums.TipoLancamentoEnum;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +19,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -51,7 +53,7 @@ public class Lancamento {
     @Enumerated(value = EnumType.STRING)
     private StatusLancamentoEnum status;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "id_venda")
     private Venda venda;
 
