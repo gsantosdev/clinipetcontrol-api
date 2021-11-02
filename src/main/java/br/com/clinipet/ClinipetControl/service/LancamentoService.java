@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -23,6 +24,7 @@ public class LancamentoService {
     @Transactional
     public Lancamento salvar(Lancamento lancamento) {
         validar(lancamento);
+        lancamento.setDataCriacao(LocalDateTime.now());
         if (lancamento.getStatus() == null) {
             lancamento.setStatus(StatusLancamentoEnum.PENDENTE);
         } else {
