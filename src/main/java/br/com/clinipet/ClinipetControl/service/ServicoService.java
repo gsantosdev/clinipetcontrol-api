@@ -10,7 +10,10 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -65,5 +68,19 @@ public class ServicoService {
         if (servico.getNome().trim().equals("")) {
             throw new RegraNegocioException("Informe um nome válido.");
         }
+    }
+
+
+    public List<Map<String, Object>> listarNomes() {
+
+        List<Map<String, Object>> listaNomes = new ArrayList<>();
+        servicoRepository.findAll().forEach(servico -> {
+            Map<String, Object> servicos = new HashMap<>();
+            servicos.put("label", servico.getNome());
+            servicos.put("value", servico.getId());
+            listaNomes.add(servicos);
+        });
+
+        return listaNomes;
     }
 }

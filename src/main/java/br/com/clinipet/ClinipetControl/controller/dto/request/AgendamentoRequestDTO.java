@@ -17,8 +17,6 @@ public class AgendamentoRequestDTO {
 
     private String observacoes;
 
-    private Long duracaoAprox;
-
     private Long idServico;
 
     private Long idAnimal;

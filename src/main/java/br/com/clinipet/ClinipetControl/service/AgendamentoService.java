@@ -6,6 +6,7 @@ import br.com.clinipet.ClinipetControl.model.entity.Agendamento;
 import br.com.clinipet.ClinipetControl.model.repository.AgendamentoRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -21,6 +22,12 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class AgendamentoService {
+
+    @Value("${horario_inicio}")
+    private String inicioHorarioEstabelecimento;
+
+    @Value("${horario_fim}")
+    private String fimHorarioEstabelecimento;
 
 
     private final AgendamentoRepository agendamentoRepository;
@@ -52,15 +59,18 @@ public class AgendamentoService {
         return agendamentoRepository.findAll();
     }
 
+
     public void validar(Agendamento agendamento) {
 
         List<Agendamento> agendamentos = agendamentoRepository.findExistentAgendamentosByRange(agendamento.getDataInicio(),
                 agendamento.getDataFim(), agendamento.getFuncionario().getId(), agendamento.getAnimal().getId());
 
+        Date dataInicio = DateUtils.addHours(agendamento.getDataInicio(), 3);
+
         if (!agendamentos.isEmpty()) {
             throw new AgendamentoException("O funcionário(a) ou o animal já possui um agendamento no mesmo horário.");
         }
-        if (DateUtils.addHours(agendamento.getDataInicio(), 3).compareTo(new Date(System.currentTimeMillis())) < 0) {
+        if (dataInicio.compareTo(new Date(System.currentTimeMillis())) < 0) {
             throw new RegraNegocioException("Selecione um data e hora válida.");
         }
         if (agendamento.getFuncionario() == null) {

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.math.BigDecimal;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -88,6 +89,7 @@ public class ServicoController {
         return ResponseEntity.ok(servicos);
     }
 
+
     @DeleteMapping("/{id}")
     public ResponseEntity deletar(@PathVariable("id") Long id) {
         try {
@@ -103,6 +105,18 @@ public class ServicoController {
             e.printStackTrace();
             return null;
         }
+    }
+
+
+    @GetMapping("/listarNomes")
+    public ResponseEntity listarServicosLabelValue() {
+        List<Map<String, Object>> listaNomes = servicoService.listarNomes();
+        if (listaNomes.isEmpty()) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(listaNomes);
+
+
     }
 
 }

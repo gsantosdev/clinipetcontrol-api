@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -57,8 +58,11 @@ public class Venda {
 
     private String cpf;
 
-
     private String tipo;
+
+    @OneToOne(mappedBy = "venda")
+    @JsonBackReference
+    private Lancamento lancamento;
 
     @PreUpdate
     @PrePersist
@@ -68,7 +72,9 @@ public class Venda {
             if (item.getAgendamento() != null){
                 valorTotal += item.getAgendamento().getServico().getValorItem() * item.getQuantidade();
             }
-            valorTotal += item.getProduto().getValorItem() * item.getQuantidade();
+            else{
+                valorTotal += item.getProduto().getValorItem() * item.getQuantidade();
+            }
 
         });
     }

@@ -58,8 +58,15 @@ public abstract class AgendamentoMapper {
 
     @Named("getDataFim")
     Date getDataFim(AgendamentoRequestDTO agendamentoRequestDTO) {
+
+        Servico servico = servicoService.obterPorId(agendamentoRequestDTO.getIdServico())
+                .orElseThrow(() -> new RegraNegocioException("Serviço não encontrado!"));
+
         return Date.from(agendamentoRequestDTO.getDataHorario().toInstant()
-                .plusSeconds(agendamentoRequestDTO.getDuracaoAprox() * 60));
+                .plusSeconds(servico.getDuracaoEstimada() * 60));
     }
+
+
+
 
 }

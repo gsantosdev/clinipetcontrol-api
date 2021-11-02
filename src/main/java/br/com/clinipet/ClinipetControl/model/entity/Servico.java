@@ -30,6 +30,8 @@ public class Servico {
 
     private String observacoes;
 
+    private Long duracaoEstimada;
+
 
     @Column(precision = 10, scale = 2)
     private Double valorBase;
@@ -44,7 +46,7 @@ public class Servico {
     @PreUpdate
     @PrePersist
     public void calcValorTotal() {
-        valorItem = valorBase * (margemLucro / 100);
+        valorItem = valorBase * ((margemLucro / 100) + 1 );
 
     }
 

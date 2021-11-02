@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -85,6 +86,7 @@ public class VendaService {
     }
 
 
+
     @Transactional
     public Venda efetuarVendaServico(VendaDTO vendaDTO) {
 
@@ -95,6 +97,7 @@ public class VendaService {
 
             Agendamento agendamento = agendamentoMapper.toEntity(itemVendaDTO.getAgendamento());
             Agendamento agendamentoSalvo = agendamentoService.marcar(agendamento);
+
             itemList.add(ItemVenda.builder().agendamento(agendamentoSalvo).quantidade(itemVendaDTO.getQuantidade()).build());
         });
 
@@ -116,7 +119,7 @@ public class VendaService {
 
         vendaDTO.getItensVenda()
                 .forEach(itemVendaDTO -> servicoService
-                        .obterPorId(itemVendaDTO.getAgendamento().getIdServico())
+                        .obterPorId(Objects.requireNonNull(itemVendaDTO.getAgendamento()).getIdServico())
                         .map(servicoList::add)
                         .orElseThrow(() -> new RegraNegocioException("Serviço não encontrado!")));
 
