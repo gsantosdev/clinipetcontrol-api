@@ -21,6 +21,7 @@ import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -75,16 +76,15 @@ public class VendaService {
         lancamentoService.salvar(Lancamento.builder()
                 .descricao("Venda de produto")
                 .venda(vendaSalva)
-                .status(StatusLancamentoEnum.CONCLUIDO)
+                .status(StatusLancamentoEnum.AGUARDANDO_PAGAMENTO)
                 .usuario(usuarioService.obterPorId(vendaDTO.getIdUsuario()).orElseThrow(() -> new RegraNegocioException("Usuario não encontrado.")))
                 .tipo(TipoLancamentoEnum.RECEITA)
-                .dataCriacao(LocalDateTime.now())
+                .dataExecucao(new Date(System.currentTimeMillis()))
                 .valor(BigDecimal.valueOf(venda.getValorTotal()))
                 .build());
 
         return vendaSalva;
     }
-
 
 
     @Transactional
@@ -113,36 +113,35 @@ public class VendaService {
 
         vendaRepository.save(venda);
 
-        //Achar serviço
-        StringBuilder servicos = new StringBuilder();
         List<Servico> servicoList = new ArrayList<>();
 
+
+
+        //Cria um lançamento para cada serviço
         vendaDTO.getItensVenda()
                 .forEach(itemVendaDTO -> servicoService
                         .obterPorId(Objects.requireNonNull(itemVendaDTO.getAgendamento()).getIdServico())
-                        .map(servicoList::add)
+                        .map(servico -> lancamentoService.salvar(Lancamento.builder()
+                                .descricao(servico.getNome())
+                                .venda(venda).usuario(usuarioService.obterPorId(vendaDTO.getIdUsuario())
+                                        .orElseThrow(() -> new RegraNegocioException("Usuario não encontrado.")))
+                                .tipo(TipoLancamentoEnum.RECEITA)
+                                .dataExecucao(itemVendaDTO.getAgendamento().getDataHorario())
+                                .valor(BigDecimal.valueOf(servico.getValorItem()))
+                                .build()))
                         .orElseThrow(() -> new RegraNegocioException("Serviço não encontrado!")));
 
-
-        //Adiciona nome dos serviços na ordem de serviço
-        servicoList.forEach(servico -> {
-            if (servicos.isEmpty()) {
-                servicos.append(servico.getNome());
-            } else {
-                servicos.append(" + ").append(servico.getNome());
-            }
-        });
-
-        //Salva o lançamento da venda efetuada
-        lancamentoService.salvar(Lancamento.builder()
-                .descricao(servicos.toString())
-                .venda(venda)
-                .usuario(usuarioService.obterPorId(vendaDTO.getIdUsuario()).orElseThrow(() -> new RegraNegocioException("Usuario não encontrado.")))
+        /*
+        servicoList.forEach(servico -> lancamentoService.salvar(Lancamento.builder()
+                .descricao(servico.getNome())
+                .venda(venda).usuario(usuarioService.obterPorId(vendaDTO.getIdUsuario())
+                        .orElseThrow(() -> new RegraNegocioException("Usuario não encontrado.")))
                 .tipo(TipoLancamentoEnum.RECEITA)
-                .dataCriacao(LocalDateTime.now())
-                .valor(BigDecimal.valueOf(venda.getValorTotal()))
-                .build());
-
+                .dataExecucao(servico.get)
+                .valor(BigDecimal.valueOf(servico.getValorItem()))
+                .build())
+        );
+        */
         return venda;
     }
 

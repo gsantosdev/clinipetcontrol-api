@@ -2,6 +2,7 @@ package br.com.clinipet.ClinipetControl.service;
 
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Lancamento;
+import br.com.clinipet.ClinipetControl.model.entity.dao.LancamentoDAO;
 import br.com.clinipet.ClinipetControl.model.enums.StatusLancamentoEnum;
 import br.com.clinipet.ClinipetControl.model.enums.TipoLancamentoEnum;
 import br.com.clinipet.ClinipetControl.model.repository.LancamentoRepository;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -24,11 +25,11 @@ public class LancamentoService {
     @Transactional
     public Lancamento salvar(Lancamento lancamento) {
         validar(lancamento);
-        lancamento.setDataCriacao(LocalDateTime.now());
+        if(lancamento.getDataExecucao() == null){
+            lancamento.setDataExecucao(new Date(System.currentTimeMillis()));
+        }
         if (lancamento.getStatus() == null) {
             lancamento.setStatus(StatusLancamentoEnum.PENDENTE);
-        } else {
-            lancamento.setStatus(StatusLancamentoEnum.CONCLUIDO);
         }
         return lancamentoRepository.save(lancamento);
     }
@@ -52,6 +53,10 @@ public class LancamentoService {
 
     public List<Lancamento> listarTodos() {
         return lancamentoRepository.findAll();
+    }
+
+    public List<LancamentoDAO> listarOrdenados(){
+        return lancamentoRepository.findLancamentosOrderedByDatUpdate();
     }
 
     public BigDecimal obterSaldo() {

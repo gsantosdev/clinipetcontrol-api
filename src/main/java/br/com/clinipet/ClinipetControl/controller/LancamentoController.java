@@ -5,6 +5,7 @@ import br.com.clinipet.ClinipetControl.controller.dto.request.StatusRequestDTO;
 import br.com.clinipet.ClinipetControl.controller.mapper.LancamentoMapper;
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Lancamento;
+import br.com.clinipet.ClinipetControl.model.entity.dao.LancamentoDAO;
 import br.com.clinipet.ClinipetControl.model.enums.StatusLancamentoEnum;
 import br.com.clinipet.ClinipetControl.service.LancamentoService;
 import lombok.RequiredArgsConstructor;
@@ -63,16 +64,26 @@ public class LancamentoController {
 
 
     @GetMapping
-    public ResponseEntity listar(){
+    public ResponseEntity listar() {
 
-        List<Lancamento> lancamentos =  lancamentoService.listarTodos();
+        List<Lancamento> lancamentos = lancamentoService.listarTodos();
 
         return ResponseEntity.ok(lancamentos);
 
     }
 
+    @GetMapping("/listarUpdated")
+    public ResponseEntity listarPorDatUpdate() {
+
+        List<LancamentoDAO> lancamentos = lancamentoService.listarOrdenados();
+        if (lancamentos.isEmpty()) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(lancamentos);
+    }
+
     @GetMapping("/caixa")
-    public ResponseEntity obterCaixa(){
+    public ResponseEntity obterCaixa() {
 
         BigDecimal caixa = lancamentoService.obterSaldo();
 

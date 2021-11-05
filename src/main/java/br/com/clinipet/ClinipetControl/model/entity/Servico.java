@@ -32,7 +32,6 @@ public class Servico {
 
     private Long duracaoEstimada;
 
-
     @Column(precision = 10, scale = 2)
     private Double valorBase;
 
