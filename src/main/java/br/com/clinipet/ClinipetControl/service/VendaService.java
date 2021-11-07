@@ -4,6 +4,7 @@ import br.com.clinipet.ClinipetControl.controller.dto.request.VendaDTO;
 import br.com.clinipet.ClinipetControl.controller.mapper.AgendamentoMapper;
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Agendamento;
+import br.com.clinipet.ClinipetControl.model.entity.Animal;
 import br.com.clinipet.ClinipetControl.model.entity.Cliente;
 import br.com.clinipet.ClinipetControl.model.entity.ItemVenda;
 import br.com.clinipet.ClinipetControl.model.entity.Lancamento;
@@ -34,6 +35,9 @@ public class VendaService {
     private final VendaRepository vendaRepository;
 
     private final ClienteService clienteService;
+
+    private final AnimalService animalService;
+
 
     private final UsuarioService usuarioService;
 
@@ -113,16 +117,13 @@ public class VendaService {
 
         vendaRepository.save(venda);
 
-        List<Servico> servicoList = new ArrayList<>();
-
-
-
         //Cria um lançamento para cada serviço
         vendaDTO.getItensVenda()
                 .forEach(itemVendaDTO -> servicoService
                         .obterPorId(Objects.requireNonNull(itemVendaDTO.getAgendamento()).getIdServico())
                         .map(servico -> lancamentoService.salvar(Lancamento.builder()
-                                .descricao(servico.getNome())
+                                .descricao(servico.getNome() + " - " + animalService.obterPorId(itemVendaDTO.getAgendamento()
+                                        .getIdAnimal()).map(Animal::getNome).orElseThrow(() -> new RegraNegocioException("Animal não encontrado.")))
                                 .venda(venda).usuario(usuarioService.obterPorId(vendaDTO.getIdUsuario())
                                         .orElseThrow(() -> new RegraNegocioException("Usuario não encontrado.")))
                                 .tipo(TipoLancamentoEnum.RECEITA)

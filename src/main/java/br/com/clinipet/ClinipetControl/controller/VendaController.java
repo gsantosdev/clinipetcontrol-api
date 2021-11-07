@@ -98,7 +98,7 @@ public class VendaController {
 
 
     @GetMapping("/listar/servicos")
-    public ResponseEntity listarVendasPorIdCliente(@RequestParam("busca") String busca) {
+    public ResponseEntity listarVendasServicoPorIdCliente(@RequestParam("busca") String busca) {
 
         if(busca == null || busca.equals(Strings.EMPTY) ){
             return ResponseEntity.badRequest().body("A busca não pode estar vazia");

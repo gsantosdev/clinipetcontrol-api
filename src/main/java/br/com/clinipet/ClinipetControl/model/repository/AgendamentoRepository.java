@@ -18,4 +18,7 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
                                                       @Param("fim") Date fim,
                                                       @Param("idFuncionario") Long idFuncionario,
                                                       @Param("idAnimal") Long idAnimal);
+
+
+    List<Agendamento> findAllByAtivoTrue();
 }

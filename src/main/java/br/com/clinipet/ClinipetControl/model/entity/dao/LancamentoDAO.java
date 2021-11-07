@@ -11,11 +11,14 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 
+
 @Data
 @NoArgsConstructor
 public class LancamentoDAO {
 
     private Long idLancamento;
+
+    private Long idVenda;
 
     private BigDecimal valor;
 
@@ -26,8 +29,9 @@ public class LancamentoDAO {
 
     private LocalDateTime updatedAt;
 
-    public LancamentoDAO(Long id, String descricao, BigDecimal valor, StatusLancamentoEnum statusLancamento, LocalDateTime updatedAt) {
+    public LancamentoDAO(Long id, Long idVenda ,String descricao, BigDecimal valor, StatusLancamentoEnum statusLancamento, LocalDateTime updatedAt) {
         this.idLancamento = id;
+        this.idVenda = idVenda;
         this.descricao = descricao;
         this.valor = valor;
         this.statusLancamento = statusLancamento;

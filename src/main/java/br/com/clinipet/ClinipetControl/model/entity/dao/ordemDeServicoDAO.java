@@ -3,6 +3,7 @@ package br.com.clinipet.ClinipetControl.model.entity.dao;
 import br.com.clinipet.ClinipetControl.model.enums.StatusLancamentoEnum;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.time.DateUtils;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -33,7 +34,7 @@ public class ordemDeServicoDAO {
         this.idLancamento = id;
         this.descricao = descricao;
         this.valor = valor;
-        this.dataExecucao = dataExecucao;
+        this.dataExecucao = DateUtils.addHours(dataExecucao, 3);
         this.statusOrdem = statusLancamentoEnum;
         this.nome = nome;
         this.cpf = cpf;

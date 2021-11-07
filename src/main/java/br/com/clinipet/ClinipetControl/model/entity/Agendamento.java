@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.SQLDelete;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -26,7 +27,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-
+@SQLDelete(sql = "UPDATE agendamento SET ativo = false WHERE id = ?")
 public class Agendamento {
 
     @Id
@@ -38,6 +39,9 @@ public class Agendamento {
     private String observacoes;
 
     private Date dataFim;
+
+    @Builder.Default
+    private Boolean ativo = true;
 
     @JsonBackReference
     @JsonIgnoreProperties("servico")
