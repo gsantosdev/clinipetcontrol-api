@@ -2,6 +2,7 @@ package br.com.clinipet.ClinipetControl.service;
 
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Animal;
+import br.com.clinipet.ClinipetControl.model.entity.dao.ServicoDAO;
 import br.com.clinipet.ClinipetControl.model.repository.AnimalRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,8 @@ import java.util.Optional;
 public class AnimalService {
 
     private final AnimalRepository repository;
+
+    private final ServicoService servicoService;
 
     @Transactional
     public Animal cadastrarAnimal(Animal animal) {
@@ -59,6 +62,11 @@ public class AnimalService {
         return repository.findByNome(nome).get();
     }
 
+
+    public List<ServicoDAO> obterHistorico(Long id) {
+        return servicoService.getHistoricoAnimal(id);
+    }
+
     public void validar(Animal animal) {
 
         if (animal.getNome().trim().equals("")) {
@@ -88,7 +96,6 @@ public class AnimalService {
         if (animal.getCliente() == null) {
             throw new RegraNegocioException("Informe um cliente válido.");
         }
-
 
     }
 }

@@ -60,4 +60,5 @@ public class Animal {
     @JoinColumn(name = "idCliente")
     private Cliente cliente;
 
+
 }

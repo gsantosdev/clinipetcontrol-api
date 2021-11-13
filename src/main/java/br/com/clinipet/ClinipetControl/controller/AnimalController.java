@@ -5,9 +5,8 @@ import br.com.clinipet.ClinipetControl.controller.dto.request.AnimalRequestDTO;
 import br.com.clinipet.ClinipetControl.controller.mapper.AnimalMapper;
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Animal;
-import br.com.clinipet.ClinipetControl.model.entity.Cliente;
+import br.com.clinipet.ClinipetControl.model.entity.dao.ServicoDAO;
 import br.com.clinipet.ClinipetControl.service.AnimalService;
-import br.com.clinipet.ClinipetControl.service.ClienteService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.http.HttpStatus;
@@ -72,6 +71,16 @@ public class AnimalController {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(animal);
+    }
+
+    @GetMapping("/historico/{id}")
+    public ResponseEntity obterHistorico(@PathVariable("id") Long id) {
+        List<ServicoDAO> historico = animalService.obterHistorico(id);
+
+        if (historico.isEmpty()) {
+            return new ResponseEntity("Animal possui histórico vazio!",HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(historico);
     }
 
     @GetMapping
