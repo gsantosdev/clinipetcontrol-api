@@ -2,7 +2,6 @@ package br.com.clinipet.ClinipetControl.service;
 
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Agendamento;
-import br.com.clinipet.ClinipetControl.model.entity.ItemVenda;
 import br.com.clinipet.ClinipetControl.model.entity.Lancamento;
 import br.com.clinipet.ClinipetControl.model.entity.dao.LancamentoDAO;
 import br.com.clinipet.ClinipetControl.model.enums.StatusLancamentoEnum;
@@ -17,7 +16,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
@@ -42,12 +40,13 @@ public class LancamentoService {
     @Transactional
     public Lancamento atualizar(Lancamento lancamento) {
         Objects.requireNonNull(lancamento.getId());
-        if(lancamento.getStatus() == StatusLancamentoEnum.CANCELADO && lancamento.getVenda().getTipo().equals("servico")){
+        if((lancamento.getStatus() == StatusLancamentoEnum.CANCELADO || lancamento.getStatus() == StatusLancamentoEnum.AGUARDANDO_PAGAMENTO) && lancamento.getVenda().getTipo().equals("servico")){
             Agendamento agendamento = lancamento.getVenda()
                     .getItensVenda()
                     .stream()
                     .findFirst()
                     .map(itemVenda -> itemVenda.getAgendamento()).orElseThrow(()-> new RegraNegocioException("Agendamento não encontrado"));
+
 
             agendamentoService.desmarcar(agendamento);
         }
@@ -69,8 +68,12 @@ public class LancamentoService {
         return lancamentoRepository.findAll();
     }
 
-    public List<LancamentoDAO> listarOrdenados(){
+    public List<LancamentoDAO> listarReceitasOrdenados(){
         return lancamentoRepository.findLancamentosReceitaOrderedByDatUpdate();
+    }
+
+    public List<LancamentoDAO> listarDespesasOrdenados(){
+        return lancamentoRepository.findLancamentosDespesaOrderedByDatUpdate();
     }
 
     public BigDecimal obterSaldo() {

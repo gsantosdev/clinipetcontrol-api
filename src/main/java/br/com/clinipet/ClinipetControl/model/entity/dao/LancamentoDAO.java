@@ -8,8 +8,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
-
 
 
 @Data
@@ -29,9 +27,17 @@ public class LancamentoDAO {
 
     private LocalDateTime updatedAt;
 
-    public LancamentoDAO(Long id, Long idVenda ,String descricao, BigDecimal valor, StatusLancamentoEnum statusLancamento, LocalDateTime updatedAt) {
+    public LancamentoDAO(Long id, Long idVenda, String descricao, BigDecimal valor, StatusLancamentoEnum statusLancamento, LocalDateTime updatedAt) {
         this.idLancamento = id;
         this.idVenda = idVenda;
+        this.descricao = descricao;
+        this.valor = valor;
+        this.statusLancamento = statusLancamento;
+        this.updatedAt = updatedAt;
+    }
+
+    public LancamentoDAO(Long id, String descricao, BigDecimal valor, StatusLancamentoEnum statusLancamento, LocalDateTime updatedAt) {
+        this.idLancamento = id;
         this.descricao = descricao;
         this.valor = valor;
         this.statusLancamento = statusLancamento;

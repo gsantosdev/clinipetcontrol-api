@@ -23,7 +23,16 @@ public interface LancamentoRepository extends JpaRepository<Lancamento, Long> {
     @Query(value = "SELECT new " +
             "br.com.clinipet.ClinipetControl.model.entity.dao.LancamentoDAO( l.id, v.id, l.descricao, l.valor," +
             " l.status, l.updatedAt)" +
-            " FROM Lancamento l JOIN l.venda v WHERE " +
+            " FROM Lancamento l LEFT JOIN l.venda v WHERE " +
             "l.status ='AGUARDANDO_PAGAMENTO' and l.tipo='RECEITA' order by l.updatedAt desc ")
     List<LancamentoDAO> findLancamentosReceitaOrderedByDatUpdate();
+
+    @Query(value = "SELECT new " +
+            "br.com.clinipet.ClinipetControl.model.entity.dao.LancamentoDAO( l.id, l.descricao, l.valor," +
+            " l.status, l.updatedAt)" +
+            " FROM Lancamento l WHERE " +
+            "l.status ='AGUARDANDO_PAGAMENTO' and l.tipo='DESPESA' order by l.updatedAt desc ")
+    List<LancamentoDAO> findLancamentosDespesaOrderedByDatUpdate();
+
+
 }

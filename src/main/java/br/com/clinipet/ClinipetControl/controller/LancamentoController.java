@@ -72,10 +72,21 @@ public class LancamentoController {
 
     }
 
-    @GetMapping("/listarUpdated")
-    public ResponseEntity listarPorDatUpdate() {
+    @GetMapping("/listarReceitas")
+    public ResponseEntity listarReceitas() {
 
-        List<LancamentoDAO> lancamentos = lancamentoService.listarOrdenados();
+        List<LancamentoDAO> lancamentos = lancamentoService.listarReceitasOrdenados();
+        if (lancamentos.isEmpty()) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(lancamentos);
+    }
+
+
+    @GetMapping("/listarDespesas")
+    public ResponseEntity listarDespesas() {
+
+        List<LancamentoDAO> lancamentos = lancamentoService.listarDespesasOrdenados();
         if (lancamentos.isEmpty()) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
