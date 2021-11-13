@@ -170,5 +170,9 @@ public class VendaService {
         return vendaRepository.findOrdensByCliente(busca);
     }
 
+    public void remarcar(Long id){
+
+    }
+
 
 }

@@ -108,9 +108,15 @@ public class ProdutoController {
 
     @PostMapping("/{id}/baixaEstoque")
     public ResponseEntity baixaEstoque(@PathVariable("id") Long id, @RequestParam(value = "quantidade", required = false) Long quantidade) {
+
         if (quantidade == null) {
             quantidade = 1L;
         }
+
+        if (quantidade == 0L) {
+            return new ResponseEntity("Valor não pode ser igual a 0", HttpStatus.BAD_REQUEST);
+        }
+
         try {
             Produto produto = produtoService.baixaEstoque(id, quantidade);
             return new ResponseEntity(produto, HttpStatus.OK);
@@ -125,6 +131,11 @@ public class ProdutoController {
         if (quantidade == null) {
             quantidade = 1L;
         }
+
+        if (quantidade == 0L) {
+            return new ResponseEntity("Valor não pode ser igual a 0", HttpStatus.BAD_REQUEST);
+        }
+
 
         try {
             Produto produto = produtoService.entradaEstoque(id, quantidade);

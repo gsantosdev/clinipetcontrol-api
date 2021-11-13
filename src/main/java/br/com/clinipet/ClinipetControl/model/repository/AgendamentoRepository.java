@@ -13,7 +13,7 @@ import java.util.List;
 public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> {
 
     @Query(value = "select * from agendamento where (:inicio between data_inicio and DATE_ADD(data_fim, INTERVAL -1 MINUTE) or " +
-            ":fim between DATE_ADD(data_inicio, INTERVAL +1 MINUTE) and data_fim) and (id_funcionario = :idFuncionario or id_animal = :idAnimal)", nativeQuery = true)
+            ":fim between DATE_ADD(data_inicio, INTERVAL +1 MINUTE) and data_fim) and (id_funcionario = :idFuncionario or id_animal = :idAnimal) and (ativo = true)", nativeQuery = true)
     List<Agendamento> findExistentAgendamentosByRange(@Param("inicio") Date inicio,
                                                       @Param("fim") Date fim,
                                                       @Param("idFuncionario") Long idFuncionario,

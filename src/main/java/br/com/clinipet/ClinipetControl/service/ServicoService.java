@@ -3,6 +3,7 @@ package br.com.clinipet.ClinipetControl.service;
 
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Servico;
+import br.com.clinipet.ClinipetControl.model.entity.dao.ServicoDAO;
 import br.com.clinipet.ClinipetControl.model.repository.ServicoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,10 @@ public class ServicoService {
         Objects.requireNonNull(servico.getId());
         validar(servico);
         return servicoRepository.save(servico);
+    }
+
+    public List<ServicoDAO> getHistoricoAnimal(Long id) {
+        return servicoRepository.getHistorico(id);
     }
 
     public List<Servico> listarServicos() {
