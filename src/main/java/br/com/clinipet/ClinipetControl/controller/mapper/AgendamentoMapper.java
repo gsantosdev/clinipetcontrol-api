@@ -2,6 +2,7 @@ package br.com.clinipet.ClinipetControl.controller.mapper;
 
 
 import br.com.clinipet.ClinipetControl.controller.dto.request.AgendamentoRequestDTO;
+import br.com.clinipet.ClinipetControl.controller.dto.response.AgendamentoRemarcarResponseDTO;
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Agendamento;
 import br.com.clinipet.ClinipetControl.model.entity.Animal;
@@ -39,6 +40,14 @@ public abstract class AgendamentoMapper {
     @Mapping(source = "dataHorario", target = "dataInicio")
     @Mapping(source = ".", target = "dataFim", qualifiedByName = "getDataFim")
     public abstract Agendamento toEntity(AgendamentoRequestDTO agendamentoRequestDTO);
+
+
+    @Mapping(source = "servico.id", target = "idServico")
+    @Mapping(source = "animal.id", target = "idAnimal")
+    @Mapping(source = "funcionario.id", target = "idFuncionario")
+    @Mapping(source = "animal.cliente.id", target = "idCliente")
+    @Mapping(source = "dataInicio", target = "dataHorario")
+    public abstract AgendamentoRemarcarResponseDTO toDTO(Agendamento agendamento);
 
 
     @Named("getServico")

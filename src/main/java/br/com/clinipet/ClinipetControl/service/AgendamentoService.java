@@ -3,7 +3,9 @@ package br.com.clinipet.ClinipetControl.service;
 import br.com.clinipet.ClinipetControl.exception.AgendamentoException;
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Agendamento;
+import br.com.clinipet.ClinipetControl.model.entity.Lancamento;
 import br.com.clinipet.ClinipetControl.model.repository.AgendamentoRepository;
+import br.com.clinipet.ClinipetControl.model.repository.LancamentoRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,7 +32,10 @@ public class AgendamentoService {
     private String fimHorarioEstabelecimento;
 
 
+
     private final AgendamentoRepository agendamentoRepository;
+
+    private final LancamentoRepository lancamentoRepository;
 
     @Transactional
     public Agendamento marcar(Agendamento agendamento) {
@@ -39,10 +44,18 @@ public class AgendamentoService {
     }
 
     @Transactional
-    public Agendamento remarcar(Agendamento agendamento) {
+    public Agendamento remarcar(Agendamento agendamento, Long idLancamento) {
         Objects.requireNonNull(agendamento.getId());
-        validar(agendamento);
-        return agendamentoRepository.save(agendamento);
+        validarRemarcar(agendamento);
+        Agendamento save = agendamentoRepository.save(agendamento);
+
+        Lancamento lancamento = lancamentoRepository.findById(idLancamento).orElseThrow(() -> new RegraNegocioException("Lancamento não encontrado"));
+        lancamento.setDescricao(agendamento.getServico().getNome() + " - " + agendamento.getAnimal().getNome());
+        lancamento.setDataExecucao(agendamento.getDataInicio());
+        lancamentoRepository.save(lancamento);
+
+        return save;
+
     }
 
     @Transactional
@@ -64,6 +77,30 @@ public class AgendamentoService {
 
         List<Agendamento> agendamentos = agendamentoRepository.findExistentAgendamentosByRange(agendamento.getDataInicio(),
                 agendamento.getDataFim(), agendamento.getFuncionario().getId(), agendamento.getAnimal().getId());
+
+        Date dataInicio = DateUtils.addHours(agendamento.getDataInicio(), 3);
+
+        if (!agendamentos.isEmpty()) {
+            throw new AgendamentoException("O funcionário(a) ou o animal já possui um agendamento no mesmo horário.");
+        }
+        if (dataInicio.compareTo(new Date(System.currentTimeMillis())) < 0) {
+            throw new RegraNegocioException("Selecione um data e hora válida.");
+        }
+        if (agendamento.getFuncionario() == null) {
+            throw new RegraNegocioException("Selecione um funcionário.");
+        }
+        if (agendamento.getAnimal() == null) {
+            throw new RegraNegocioException("Selecione um animal.");
+        }
+        if (agendamento.getServico() == null) {
+            throw new RegraNegocioException("Selecione um serviço.");
+        }
+    }
+
+    public void validarRemarcar(Agendamento agendamento) {
+
+         List<Agendamento> agendamentos = agendamentoRepository.findExistentAgendamentosByRangeRemarcar(agendamento.getDataInicio(),
+                agendamento.getDataFim(), agendamento.getFuncionario().getId(), agendamento.getAnimal().getId(), agendamento.getId());
 
         Date dataInicio = DateUtils.addHours(agendamento.getDataInicio(), 3);
 

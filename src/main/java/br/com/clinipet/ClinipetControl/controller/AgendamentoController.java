@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -53,13 +54,12 @@ public class AgendamentoController {
     public ResponseEntity remarcar(@PathVariable("id") Long id, @RequestBody AgendamentoRequestDTO dto) {
         Agendamento agendamentoARemarcar = agendamentoMapper.toEntity(dto);
 
-
         return agendamentoService.obterPorId(id).map(entity -> {
             try {
                 agendamentoARemarcar.setId(entity.getId());
-                agendamentoService.remarcar(agendamentoARemarcar);
+                agendamentoService.remarcar(agendamentoARemarcar, dto.getIdLancamento());
                 return ResponseEntity.ok().body(agendamentoARemarcar);
-            } catch (RegraNegocioException e) {
+            } catch (RegraNegocioException | AgendamentoException e) {
                 return ResponseEntity.badRequest().body(e.getMessage());
             }
 
@@ -100,13 +100,16 @@ public class AgendamentoController {
     }
 
     @PostMapping("/validar")
-    public ResponseEntity validarAgendamento(@RequestBody AgendamentoRequestDTO dto) {
+    public ResponseEntity validarAgendamento(@RequestBody AgendamentoRequestDTO dto, @RequestParam(value = "remarcar", defaultValue = "false") Boolean remarcar) {
 
         log.info("AgendamentoRequestDTO{}", dto);
         try {
             Agendamento agendamento = agendamentoMapper.toEntity(dto);
-            agendamentoService.validar(agendamento);
-
+            if (remarcar) {
+                agendamentoService.validarRemarcar(agendamento);
+            } else {
+                agendamentoService.validar(agendamento);
+            }
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

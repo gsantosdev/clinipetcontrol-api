@@ -1,5 +1,7 @@
 package br.com.clinipet.ClinipetControl.model.entity.dao;
 
+import br.com.clinipet.ClinipetControl.controller.dto.response.AgendamentoRemarcarResponseDTO;
+import br.com.clinipet.ClinipetControl.model.entity.Agendamento;
 import br.com.clinipet.ClinipetControl.model.enums.StatusLancamentoEnum;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -39,4 +41,6 @@ public class ordemDeServicoDAO {
         this.nome = nome;
         this.cpf = cpf;
     }
+
+    private AgendamentoRemarcarResponseDTO agendamento;
 }

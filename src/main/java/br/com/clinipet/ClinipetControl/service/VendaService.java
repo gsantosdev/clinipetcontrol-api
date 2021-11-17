@@ -9,7 +9,6 @@ import br.com.clinipet.ClinipetControl.model.entity.Cliente;
 import br.com.clinipet.ClinipetControl.model.entity.ItemVenda;
 import br.com.clinipet.ClinipetControl.model.entity.Lancamento;
 import br.com.clinipet.ClinipetControl.model.entity.Produto;
-import br.com.clinipet.ClinipetControl.model.entity.Servico;
 import br.com.clinipet.ClinipetControl.model.entity.Venda;
 import br.com.clinipet.ClinipetControl.model.entity.dao.ordemDeServicoDAO;
 import br.com.clinipet.ClinipetControl.model.enums.StatusLancamentoEnum;
@@ -37,7 +36,6 @@ public class VendaService {
     private final ClienteService clienteService;
 
     private final AnimalService animalService;
-
 
     private final UsuarioService usuarioService;
 
@@ -167,10 +165,28 @@ public class VendaService {
     }
 
     public List<ordemDeServicoDAO> listarOrdensPorCliente(String busca) {
-        return vendaRepository.findOrdensByCliente(busca);
+
+
+        List<ordemDeServicoDAO> ordensByCliente = vendaRepository.findOrdensByCliente(busca);
+
+
+        ordensByCliente
+                .forEach(ordemDeServicoDAO -> ordemDeServicoDAO.setAgendamento(lancamentoService
+                        .obterPorId(ordemDeServicoDAO.getIdLancamento())
+                        .map(Lancamento::getVenda)
+                        .map(Venda::getItensVenda)
+                        .get()
+                        .stream()
+                        .findFirst()
+                        .map(ItemVenda::getAgendamento)
+                        .map(agendamentoMapper::toDTO)
+                        .orElseThrow(() -> new RegraNegocioException("Falha ao achar o agendamento"))));
+
+        return ordensByCliente;
+
     }
 
-    public void remarcar(Long id){
+    public void remarcar(Long id) {
 
     }
 

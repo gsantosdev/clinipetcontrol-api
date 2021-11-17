@@ -22,4 +22,6 @@ public class AgendamentoRequestDTO {
     private Long idAnimal;
 
     private Long idFuncionario;
+
+    private Long idLancamento;
 }

@@ -45,7 +45,7 @@ public class Lancamento {
     private BigDecimal valor;
 
     @CreatedDate
-    @Column(name = "data_criacao", nullable = false, updatable = false)
+    @Column(name = "data_criacao", nullable = false)
     private Date dataExecucao;
 
     @Enumerated(value = EnumType.STRING)
