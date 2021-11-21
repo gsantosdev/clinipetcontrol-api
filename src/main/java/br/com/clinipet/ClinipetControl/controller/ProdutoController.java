@@ -1,6 +1,7 @@
 package br.com.clinipet.ClinipetControl.controller;
 
 
+import br.com.clinipet.ClinipetControl.controller.dto.response.ProdutoVendidoResponse;
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Produto;
 import br.com.clinipet.ClinipetControl.model.enums.StatusEstoqueEnum;
@@ -169,6 +170,33 @@ public class ProdutoController {
         } catch (RegraNegocioException e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
+
+    }
+
+
+    @GetMapping("/listar")
+    public ResponseEntity obterTodos() {
+
+        List<Produto> produtos = produtoService.listarProdutos();
+
+        if (produtos.isEmpty()) {
+            return new ResponseEntity("Não há nenhum produto cadastrado", HttpStatus.NOT_FOUND);
+        }
+
+        return ResponseEntity.ok(produtos);
+
+    }
+
+    @GetMapping("/listarQuantidadeVendaProduto")
+    public ResponseEntity listarQuantidadeVendaProduto() {
+
+        List<ProdutoVendidoResponse> produtos = produtoService.listarQuantidadeVendaProduto();
+
+        if (produtos.isEmpty()) {
+            return new ResponseEntity("Não há nenhum produto cadastrado", HttpStatus.NOT_FOUND);
+        }
+
+        return ResponseEntity.ok(produtos);
 
     }
 }

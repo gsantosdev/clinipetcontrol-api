@@ -1,8 +1,10 @@
 package br.com.clinipet.ClinipetControl.service;
 
+import br.com.clinipet.ClinipetControl.controller.dto.response.ProdutoVendidoResponse;
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Produto;
 import br.com.clinipet.ClinipetControl.model.enums.StatusEstoqueEnum;
+import br.com.clinipet.ClinipetControl.model.repository.ItemVendaRepository;
 import br.com.clinipet.ClinipetControl.model.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -19,6 +22,8 @@ import java.util.Optional;
 public class ProdutoService {
 
     private final ProdutoRepository produtoRepository;
+
+    private final ItemVendaRepository itemVendaRepository;
 
     @Transactional
     public Produto cadastrar(Produto produto) {
@@ -69,6 +74,29 @@ public class ProdutoService {
 
         return produtoRepository.save(produto);
 
+    }
+
+    public List<ProdutoVendidoResponse> listarQuantidadeVendaProduto() {
+
+        List<ProdutoVendidoResponse> produtoVendidoResponseList = new ArrayList<>();
+
+        listarProdutos().forEach(produto -> {
+            Integer quantidadeVendido = itemVendaRepository.findByProduto(produto).size();
+            ProdutoVendidoResponse produtoVendido = ProdutoVendidoResponse.builder()
+                    .produto(produto)
+                    .quantidade(quantidadeVendido.longValue())
+                    .valorTotal(produto.getValorItem() * quantidadeVendido)
+                    .build();
+            produtoVendidoResponseList.add(produtoVendido);
+
+        });
+
+        return produtoVendidoResponseList;
+    }
+
+
+    public List<Produto> listarProdutos() {
+        return produtoRepository.findAll();
     }
 
 
