@@ -19,7 +19,7 @@ public interface VendaRepository extends JpaRepository<Venda, Long> {
     @Query(value = "SELECT new " +
             "br.com.clinipet.ClinipetControl.model.entity.dao.ordemDeServicoDAO( l.id, l.descricao, l.valor," +
             " l.status, l.dataExecucao ,c.nome, c.cpf)" +
-            " FROM Lancamento l JOIN l.venda v JOIN v.cliente c WHERE c.nome LIKE CONCAT('%', ?1, '%') " +
-            "OR c.cpf LIKE CONCAT('%', ?1, '%') AND v.tipo ='servico' AND l.status <> 'AGUARDANDO_PAGAMENTO' AND l.status <> 'CONCLUIDO' AND l.status <> 'CANCELADO' order by l.dataExecucao desc ")
+            " FROM Lancamento l JOIN l.venda v JOIN v.cliente c WHERE (c.nome LIKE CONCAT('%', ?1, '%') " +
+            "OR c.cpf LIKE CONCAT('%', ?1, '%')) AND v.tipo ='servico' AND l.status <> 'AGUARDANDO_PAGAMENTO' AND l.status <> 'CONCLUIDO' AND l.status <> 'CANCELADO' order by l.dataExecucao desc ")
     List<ordemDeServicoDAO> findOrdensByCliente(@Param("busca") String busca);
 }

@@ -6,6 +6,7 @@ import br.com.clinipet.ClinipetControl.exception.AgendamentoException;
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.ItemVenda;
 import br.com.clinipet.ClinipetControl.model.entity.Venda;
+import br.com.clinipet.ClinipetControl.model.entity.dao.LancamentoDAO;
 import br.com.clinipet.ClinipetControl.model.entity.dao.ordemDeServicoDAO;
 import br.com.clinipet.ClinipetControl.service.VendaService;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -111,6 +113,9 @@ public class VendaController {
         return new ResponseEntity(ordens, HttpStatus.OK);
 
     }
+
+
+
 
 
 }

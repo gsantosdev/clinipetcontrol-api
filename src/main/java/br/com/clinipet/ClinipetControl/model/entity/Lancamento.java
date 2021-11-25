@@ -44,6 +44,8 @@ public class Lancamento {
 
     private BigDecimal valor;
 
+    private String cpfCnpj;
+
     @CreatedDate
     @Column(name = "data_criacao", nullable = false)
     private Date dataExecucao;

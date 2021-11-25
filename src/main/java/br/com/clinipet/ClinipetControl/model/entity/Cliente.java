@@ -9,7 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.annotations.SQLDelete;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -43,6 +43,7 @@ public class Cliente {
     private String cpf;
 
     @JsonFormat(pattern = "dd/MM/yyyy")
+    @Nullable
     private Date dataNascimento;
 
     private String telefone;
@@ -60,6 +61,8 @@ public class Cliente {
     private String cidade;
 
     private String uf;
+
+    private Boolean PJ;
 
     //private Boolean ativo;
 

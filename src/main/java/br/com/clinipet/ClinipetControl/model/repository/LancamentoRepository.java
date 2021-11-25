@@ -21,11 +21,18 @@ public interface LancamentoRepository extends JpaRepository<Lancamento, Long> {
 
 
     @Query(value = "SELECT new " +
-            "br.com.clinipet.ClinipetControl.model.entity.dao.LancamentoDAO( l.id, v.id, l.descricao, l.valor," +
+            "br.com.clinipet.ClinipetControl.model.entity.dao.LancamentoDAO( l.id, v.id, l.cpfCnpj, l.descricao, l.valor," +
             " l.status, l.updatedAt)" +
             " FROM Lancamento l LEFT JOIN l.venda v WHERE " +
             "l.status ='AGUARDANDO_PAGAMENTO' and l.tipo='RECEITA' order by l.updatedAt desc ")
     List<LancamentoDAO> findLancamentosReceitaOrderedByDatUpdate();
+
+    @Query(value = "SELECT new " +
+            "br.com.clinipet.ClinipetControl.model.entity.dao.LancamentoDAO( l.id, v.id, l.cpfCnpj, l.descricao, l.valor," +
+            " l.status, l.updatedAt)" +
+            " FROM Lancamento l LEFT JOIN l.venda v WHERE (v.id = cast(:busca as long) or l.valor = CONVERT(:busca, DECIMAL(19,2)) or l.cpfCnpj LIKE CONCAT('%', :busca, '%') ) and " +
+            "l.status ='AGUARDANDO_PAGAMENTO' and l.tipo='RECEITA' order by l.updatedAt desc ")
+    List<LancamentoDAO> findLancamentoReceita(@Param("busca") String busca);
 
     @Query(value = "SELECT new " +
             "br.com.clinipet.ClinipetControl.model.entity.dao.LancamentoDAO( l.id, l.descricao, l.valor," +

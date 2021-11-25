@@ -76,6 +76,10 @@ public class LancamentoService {
         return lancamentoRepository.findLancamentosDespesaOrderedByDatUpdate();
     }
 
+    public List<LancamentoDAO> findReceita(String busca){
+        return lancamentoRepository.findLancamentoReceita(busca);
+    }
+
     public BigDecimal obterSaldo() {
 
         BigDecimal receitas = lancamentoRepository.obterSaldoPorTipoLancamentoStatus(TipoLancamentoEnum.RECEITA, StatusLancamentoEnum.CONCLUIDO);

@@ -24,4 +24,6 @@ public class VendaDTO {
 
     private Long idUsuario;
 
+    private String cpfCnpj;
+
 }

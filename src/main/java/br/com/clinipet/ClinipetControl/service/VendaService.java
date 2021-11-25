@@ -10,12 +10,15 @@ import br.com.clinipet.ClinipetControl.model.entity.ItemVenda;
 import br.com.clinipet.ClinipetControl.model.entity.Lancamento;
 import br.com.clinipet.ClinipetControl.model.entity.Produto;
 import br.com.clinipet.ClinipetControl.model.entity.Venda;
+import br.com.clinipet.ClinipetControl.model.entity.dao.LancamentoDAO;
 import br.com.clinipet.ClinipetControl.model.entity.dao.ordemDeServicoDAO;
 import br.com.clinipet.ClinipetControl.model.enums.StatusLancamentoEnum;
 import br.com.clinipet.ClinipetControl.model.enums.TipoLancamentoEnum;
 import br.com.clinipet.ClinipetControl.model.repository.VendaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
@@ -63,7 +66,7 @@ public class VendaService {
             itemList.add(ItemVenda.builder().produto(produto).quantidade(itemVendaDTO.getQuantidade()).build());
         });
 
-        Venda venda = Venda.builder().tipo("produto").itensVenda(itemList).dataCriacao(LocalDateTime.now()).build();
+        Venda venda = Venda.builder().tipo("produto").cpfCnpj(vendaDTO.getCpfCnpj()).itensVenda(itemList).dataCriacao(LocalDateTime.now()).build();
 
         venda.getItensVenda().forEach(itemVenda -> itemVenda.setVenda(venda));
 
@@ -83,11 +86,11 @@ public class VendaService {
                 .tipo(TipoLancamentoEnum.RECEITA)
                 .dataExecucao(new Date(System.currentTimeMillis()))
                 .valor(BigDecimal.valueOf(venda.getValorTotal()))
+                .cpfCnpj(vendaSalva.getCpfCnpj())
                 .build());
 
         return vendaSalva;
     }
-
 
     @Transactional
     public Venda efetuarVendaServico(VendaDTO vendaDTO) {
@@ -127,6 +130,7 @@ public class VendaService {
                                 .tipo(TipoLancamentoEnum.RECEITA)
                                 .dataExecucao(itemVendaDTO.getAgendamento().getDataHorario())
                                 .valor(BigDecimal.valueOf(servico.getValorItem()))
+                                .cpfCnpj(clienteService.obterPorId(vendaDTO.getIdCliente()).orElseThrow(() -> new RegraNegocioException("Cliente não encontrado!")).getCpf())
                                 .build()))
                         .orElseThrow(() -> new RegraNegocioException("Serviço não encontrado!")));
 
@@ -183,10 +187,6 @@ public class VendaService {
                         .orElseThrow(() -> new RegraNegocioException("Falha ao achar o agendamento"))));
 
         return ordensByCliente;
-
-    }
-
-    public void remarcar(Long id) {
 
     }
 

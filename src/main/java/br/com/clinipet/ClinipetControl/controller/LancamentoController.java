@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
@@ -99,5 +100,15 @@ public class LancamentoController {
         BigDecimal caixa = lancamentoService.obterSaldo();
 
         return ResponseEntity.ok(caixa);
+    }
+
+
+    @GetMapping("/findReceita")
+    public ResponseEntity findReceita(@RequestParam String busca) {
+        List<LancamentoDAO> lancamentos = lancamentoService.findReceita(busca);
+        if (lancamentos.isEmpty()) {
+            return new ResponseEntity(lancamentos, HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity(lancamentos, HttpStatus.OK);
     }
 }

@@ -22,19 +22,24 @@ public class LancamentoDAO {
 
     private String descricao;
 
+    private String cpfCnpj;
+
     @Enumerated(EnumType.STRING)
     private StatusLancamentoEnum statusLancamento;
 
     private LocalDateTime updatedAt;
 
-    public LancamentoDAO(Long id, Long idVenda, String descricao, BigDecimal valor, StatusLancamentoEnum statusLancamento, LocalDateTime updatedAt) {
+    public LancamentoDAO(Long id, Long idVenda, String cpfCnpj, String descricao, BigDecimal valor, StatusLancamentoEnum statusLancamento, LocalDateTime updatedAt) {
         this.idLancamento = id;
         this.idVenda = idVenda;
         this.descricao = descricao;
         this.valor = valor;
         this.statusLancamento = statusLancamento;
         this.updatedAt = updatedAt;
+        this.cpfCnpj = cpfCnpj;
     }
+
+
 
     public LancamentoDAO(Long id, String descricao, BigDecimal valor, StatusLancamentoEnum statusLancamento, LocalDateTime updatedAt) {
         this.idLancamento = id;

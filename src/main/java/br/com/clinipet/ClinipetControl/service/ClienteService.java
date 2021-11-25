@@ -33,7 +33,7 @@ public class ClienteService {
             return clienteRepository.save(cliente);
         } catch (Exception e) {
             if (e.getCause() != null && e.getCause().getCause() instanceof SQLIntegrityConstraintViolationException) {
-                throw new RegraNegocioException("CPF já cadastrado");
+                throw new RegraNegocioException("CPF ou CNPJ já cadastrado");
             }
             e.printStackTrace();
             return null;
@@ -58,7 +58,7 @@ public class ClienteService {
             return clienteRepository.save(cliente);
         } catch (Exception e) {
             if (e.getCause() != null && e.getCause().getCause() instanceof SQLIntegrityConstraintViolationException) {
-                throw new RegraNegocioException("CPF já cadastrado");
+                throw new RegraNegocioException("CPF ou CNPJ já cadastrado");
             }
             e.printStackTrace();
             return null;
@@ -117,11 +117,11 @@ public class ClienteService {
             throw new RegraNegocioException("Informe um CPF válido.");
         }
 
-        if (cliente.getDataNascimento() == null) {
+        if (!cliente.getPJ() && cliente.getDataNascimento() == null) {
             throw new RegraNegocioException("Informe uma data de nascimento válida.");
         }
 
-        if (cliente.getDataNascimento().compareTo(new Date()) > 0) {
+        if (!cliente.getPJ() && cliente.getDataNascimento().compareTo(new Date()) > 0) {
             throw new RegraNegocioException("Informe uma data de nascimento válida.");
         }
 
