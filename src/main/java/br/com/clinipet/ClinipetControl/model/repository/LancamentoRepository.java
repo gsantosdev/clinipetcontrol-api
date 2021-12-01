@@ -42,4 +42,8 @@ public interface LancamentoRepository extends JpaRepository<Lancamento, Long> {
     List<LancamentoDAO> findLancamentosDespesaOrderedByDatUpdate();
 
 
+
+    List<Lancamento> findByIdIn(List<Long> idsLancamento);
+
+
 }

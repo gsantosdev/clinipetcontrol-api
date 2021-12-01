@@ -1,5 +1,6 @@
 package br.com.clinipet.ClinipetControl.service;
 
+import br.com.clinipet.ClinipetControl.controller.dto.request.LancamentoIdsDTO;
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Agendamento;
 import br.com.clinipet.ClinipetControl.model.entity.Lancamento;
@@ -28,7 +29,7 @@ public class LancamentoService {
     @Transactional
     public Lancamento salvar(Lancamento lancamento) {
         validar(lancamento);
-        if(lancamento.getDataExecucao() == null){
+        if (lancamento.getDataExecucao() == null) {
             lancamento.setDataExecucao(new Date(System.currentTimeMillis()));
         }
         if (lancamento.getStatus() == null) {
@@ -40,12 +41,12 @@ public class LancamentoService {
     @Transactional
     public Lancamento atualizar(Lancamento lancamento) {
         Objects.requireNonNull(lancamento.getId());
-        if((lancamento.getStatus() == StatusLancamentoEnum.CANCELADO || lancamento.getStatus() == StatusLancamentoEnum.AGUARDANDO_PAGAMENTO) && lancamento.getVenda().getTipo().equals("servico")){
+        if ((lancamento.getStatus() == StatusLancamentoEnum.CANCELADO || lancamento.getStatus() == StatusLancamentoEnum.AGUARDANDO_PAGAMENTO) && lancamento.getVenda().getTipo().equals("servico")) {
             Agendamento agendamento = lancamento.getVenda()
                     .getItensVenda()
                     .stream()
                     .findFirst()
-                    .map(itemVenda -> itemVenda.getAgendamento()).orElseThrow(()-> new RegraNegocioException("Agendamento não encontrado"));
+                    .map(itemVenda -> itemVenda.getAgendamento()).orElseThrow(() -> new RegraNegocioException("Agendamento não encontrado"));
 
 
             agendamentoService.desmarcar(agendamento);
@@ -68,16 +69,20 @@ public class LancamentoService {
         return lancamentoRepository.findAll();
     }
 
-    public List<LancamentoDAO> listarReceitasOrdenados(){
+    public List<LancamentoDAO> listarReceitasOrdenados() {
         return lancamentoRepository.findLancamentosReceitaOrderedByDatUpdate();
     }
 
-    public List<LancamentoDAO> listarDespesasOrdenados(){
+    public List<LancamentoDAO> listarDespesasOrdenados() {
         return lancamentoRepository.findLancamentosDespesaOrderedByDatUpdate();
     }
 
-    public List<LancamentoDAO> findReceita(String busca){
+    public List<LancamentoDAO> findReceita(String busca) {
         return lancamentoRepository.findLancamentoReceita(busca);
+    }
+
+    public List<Lancamento> findByIdIn(LancamentoIdsDTO idsLancamento) {
+        return lancamentoRepository.findByIdIn(idsLancamento.getIdsLancamento());
     }
 
     public BigDecimal obterSaldo() {

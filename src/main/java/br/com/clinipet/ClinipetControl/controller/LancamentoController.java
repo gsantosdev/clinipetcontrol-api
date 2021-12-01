@@ -1,13 +1,16 @@
 package br.com.clinipet.ClinipetControl.controller;
 
+import br.com.clinipet.ClinipetControl.controller.dto.request.LancamentoIdsDTO;
 import br.com.clinipet.ClinipetControl.controller.dto.request.LancamentoRequestDTO;
 import br.com.clinipet.ClinipetControl.controller.dto.request.StatusRequestDTO;
 import br.com.clinipet.ClinipetControl.controller.mapper.LancamentoMapper;
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Lancamento;
+import br.com.clinipet.ClinipetControl.model.entity.RegistroCaixa;
 import br.com.clinipet.ClinipetControl.model.entity.dao.LancamentoDAO;
 import br.com.clinipet.ClinipetControl.model.enums.StatusLancamentoEnum;
 import br.com.clinipet.ClinipetControl.service.LancamentoService;
+import br.com.clinipet.ClinipetControl.service.RegistroCaixaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -31,6 +36,8 @@ public class LancamentoController {
     private final LancamentoService lancamentoService;
 
     private final LancamentoMapper lancamentoMapper;
+
+    private final RegistroCaixaService registroCaixaService;
 
     @PostMapping
     public ResponseEntity salvar(@RequestBody LancamentoRequestDTO dto) {
@@ -102,12 +109,28 @@ public class LancamentoController {
         return ResponseEntity.ok(caixa);
     }
 
+    @PostMapping("/findByIdIn")
+    public ResponseEntity obterTodosPorIdEm(@RequestBody LancamentoIdsDTO idsLancamento) {
+
+        try {
+            List<Lancamento> lancamentos = lancamentoService.findByIdIn(idsLancamento);
+            RegistroCaixa registroCaixa = RegistroCaixa.builder().lancamentos(lancamentos).fim(Date.from(Instant.now())).inicio(idsLancamento.getDataInicio()).build();
+            registroCaixaService.salvar(registroCaixa);
+
+            return ResponseEntity.ok(lancamentos);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+
+
+    }
+
 
     @GetMapping("/findReceita")
     public ResponseEntity findReceita(@RequestParam String busca) {
         List<LancamentoDAO> lancamentos = lancamentoService.findReceita(busca);
         if (lancamentos.isEmpty()) {
-            return new ResponseEntity(lancamentos, HttpStatus.NO_CONTENT);
+            return new ResponseEntity(lancamentos, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity(lancamentos, HttpStatus.OK);
     }

@@ -25,6 +25,6 @@ public abstract class LancamentoMapper {
 
     @Named("getUsuario")
     Usuario getUsuario(@NonNull final Long id){
-        return usuarioService.obterPorId(id).orElseThrow( ()-> new RegraNegocioException("Cliente não encontrado"));
+        return usuarioService.obterPorId(id).orElseThrow( ()-> new RegraNegocioException("Usuário não encontrado"));
     }
 }

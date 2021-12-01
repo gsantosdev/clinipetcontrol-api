@@ -13,6 +13,6 @@ import java.util.Optional;
 @Repository
 public interface FuncionarioRepository extends JpaRepository<Funcionario, Long> {
 
-    @Query(value = "SELECT * FROM Funcionario WHERE nome LIKE CONCAT('%', :busca, '%') OR telefone LIKE CONCAT('%', :busca, '%')", nativeQuery = true)
+    @Query(value = "SELECT * FROM Funcionario WHERE ativo = true and nome LIKE CONCAT('%', :busca, '%') OR telefone LIKE CONCAT('%', :busca, '%')", nativeQuery = true)
     Optional<List<Funcionario>> findByNomeOrTelefone(@Param("busca") String busca);
 }
