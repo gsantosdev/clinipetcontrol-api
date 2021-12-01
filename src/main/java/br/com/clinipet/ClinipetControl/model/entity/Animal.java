@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.SQLDelete;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.Entity;
@@ -24,6 +25,8 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "animal")
+@SQLDelete(sql = "UPDATE animal SET ativo = false WHERE id = ?")
+
 public class Animal {
 
     @Id
@@ -33,6 +36,10 @@ public class Animal {
     private String nome;
 
     private String sexo;
+
+    @Builder.Default
+    private Boolean ativo = true;
+
 
     @JsonFormat(pattern = "dd/MM/yyyy")
     private Date dataNascimento;

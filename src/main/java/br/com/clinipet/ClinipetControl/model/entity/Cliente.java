@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.SQLDelete;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.CascadeType;
@@ -30,7 +31,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "cliente")
-//@SQLDelete(sql = "UPDATE cliente SET ativo = false WHERE id = ?")
 public class Cliente {
 
     @Id
@@ -63,6 +63,10 @@ public class Cliente {
     private String uf;
 
     private Boolean PJ;
+
+    @Builder.Default
+    private Boolean ativo = true;
+
 
     //private Boolean ativo;
 

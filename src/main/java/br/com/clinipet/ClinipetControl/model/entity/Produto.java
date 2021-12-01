@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,6 +24,8 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "produto")
+@SQLDelete(sql = "UPDATE produto SET ativo = false WHERE id = ?")
+
 public class Produto {
 
     @Id
@@ -47,6 +50,9 @@ public class Produto {
     private Long estoqueMinimo;
 
     private Long estoqueMaximo;
+
+    @Builder.Default
+    private Boolean ativo = true;
 
 
     @PreUpdate

@@ -19,6 +19,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.math.BigDecimal;
@@ -62,5 +63,8 @@ public class Lancamento {
     @OneToOne
     @JoinColumn(name = "id_venda")
     private Venda venda;
+
+    @Builder.Default
+    private Boolean ativo = true;
 
 }
