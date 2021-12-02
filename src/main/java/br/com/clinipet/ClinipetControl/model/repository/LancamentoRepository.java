@@ -43,7 +43,7 @@ public interface LancamentoRepository extends JpaRepository<Lancamento, Long> {
 
 
 
-    List<Lancamento> findByIdIn(List<Long> idsLancamento);
+    List<Lancamento> findByIdLancamentoIn(List<Long> idsLancamento);
 
 
 }

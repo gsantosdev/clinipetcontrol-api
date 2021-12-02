@@ -60,19 +60,18 @@ public class Venda {
 
     private String tipo;
 
-    @OneToOne(mappedBy = "venda")
+    @OneToMany(mappedBy = "venda")
     @JsonBackReference
-    private Lancamento lancamento;
+    private List<Lancamento> lancamento;
 
     @PreUpdate
     @PrePersist
     public void calcValorTotal() {
         itensVenda.forEach(item -> {
 
-            if (item.getAgendamento() != null){
+            if (item.getAgendamento() != null) {
                 valorTotal += item.getAgendamento().getServico().getValorItem() * item.getQuantidade();
-            }
-            else{
+            } else {
                 valorTotal += item.getProduto().getValorItem() * item.getQuantidade();
             }
 

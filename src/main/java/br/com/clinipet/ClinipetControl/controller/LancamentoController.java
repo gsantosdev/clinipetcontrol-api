@@ -3,6 +3,7 @@ package br.com.clinipet.ClinipetControl.controller;
 import br.com.clinipet.ClinipetControl.controller.dto.request.LancamentoIdsDTO;
 import br.com.clinipet.ClinipetControl.controller.dto.request.LancamentoRequestDTO;
 import br.com.clinipet.ClinipetControl.controller.dto.request.StatusRequestDTO;
+import br.com.clinipet.ClinipetControl.controller.dto.response.FechamentoCaixaResponseDTO;
 import br.com.clinipet.ClinipetControl.controller.mapper.LancamentoMapper;
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Lancamento;
@@ -12,6 +13,7 @@ import br.com.clinipet.ClinipetControl.model.enums.StatusLancamentoEnum;
 import br.com.clinipet.ClinipetControl.service.LancamentoService;
 import br.com.clinipet.ClinipetControl.service.RegistroCaixaService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -116,13 +118,31 @@ public class LancamentoController {
             List<Lancamento> lancamentos = lancamentoService.findByIdIn(idsLancamento);
             RegistroCaixa registroCaixa = RegistroCaixa.builder().lancamentos(lancamentos).fim(Date.from(Instant.now())).inicio(idsLancamento.getDataInicio()).build();
             registroCaixaService.salvar(registroCaixa);
+            //lancamentoService.fechamentoCaixa(lancamentos);
 
             return ResponseEntity.ok(lancamentos);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
+    }
 
 
+    @PostMapping("/relatorioFechamento")
+    public ResponseEntity relatorioFechamento(@RequestBody LancamentoIdsDTO idsLancamento) {
+
+        try {
+            List<Lancamento> lancamentos = lancamentoService.findByIdIn(idsLancamento);
+            RegistroCaixa registroCaixa = RegistroCaixa.builder().lancamentos(lancamentos).fim(Date.from(Instant.now())).inicio(idsLancamento.getDataInicio()).build();
+            registroCaixaService.salvar(registroCaixa);
+            FechamentoCaixaResponseDTO fechamentoCaixaResponseDTO = lancamentoService.fechamentoCaixa(lancamentos);
+
+            fechamentoCaixaResponseDTO.setFim(DateUtils.addHours((Date.from(Instant.now())), -3));
+            fechamentoCaixaResponseDTO.setInicio(DateUtils.addHours(idsLancamento.getDataInicio(), -3));
+
+            return ResponseEntity.ok(fechamentoCaixaResponseDTO);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
     }
 
 

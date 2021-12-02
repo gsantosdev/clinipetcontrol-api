@@ -1,6 +1,7 @@
 package br.com.clinipet.ClinipetControl.service;
 
 import br.com.clinipet.ClinipetControl.controller.dto.request.LancamentoIdsDTO;
+import br.com.clinipet.ClinipetControl.controller.dto.response.FechamentoCaixaResponseDTO;
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Agendamento;
 import br.com.clinipet.ClinipetControl.model.entity.Lancamento;
@@ -40,7 +41,7 @@ public class LancamentoService {
 
     @Transactional
     public Lancamento atualizar(Lancamento lancamento) {
-        Objects.requireNonNull(lancamento.getId());
+        Objects.requireNonNull(lancamento.getIdLancamento());
         if ((lancamento.getStatus() == StatusLancamentoEnum.CANCELADO || lancamento.getStatus() == StatusLancamentoEnum.AGUARDANDO_PAGAMENTO) && lancamento.getVenda().getTipo().equals("servico")) {
             Agendamento agendamento = lancamento.getVenda()
                     .getItensVenda()
@@ -57,7 +58,7 @@ public class LancamentoService {
 
     @Transactional
     public void deletar(Lancamento lancamento) {
-        Objects.requireNonNull(lancamento.getId());
+        Objects.requireNonNull(lancamento.getIdLancamento());
         lancamentoRepository.delete(lancamento);
     }
 
@@ -82,7 +83,7 @@ public class LancamentoService {
     }
 
     public List<Lancamento> findByIdIn(LancamentoIdsDTO idsLancamento) {
-        return lancamentoRepository.findByIdIn(idsLancamento.getIdsLancamento());
+        return lancamentoRepository.findByIdLancamentoIn(idsLancamento.getIdsLancamento());
     }
 
     public BigDecimal obterSaldo() {
@@ -119,6 +120,45 @@ public class LancamentoService {
         if (lancamento.getTipo() == null) {
             throw new RegraNegocioException("Informe um tipo de lançamento.");
         }
+
+    }
+
+    public FechamentoCaixaResponseDTO fechamentoCaixa(List<Lancamento> lancamentos) {
+
+        FechamentoCaixaResponseDTO response = new FechamentoCaixaResponseDTO();
+        lancamentos.forEach(lancamento -> {
+
+            if (lancamento.getTipo() == TipoLancamentoEnum.RECEITA) {
+
+                if (lancamento.getVenda() != null) {
+                    if (lancamento.getVenda().getTipo() != null) {
+                        if (lancamento.getVenda().getTipo().equals("servico")) {
+                            response.setServicos(response.servicos.add(lancamento.getValor()));
+                        }
+                        if (lancamento.getVenda().getTipo().equals("produto")) {
+                            response.setProdutos(response.produtos.add(lancamento.getValor()));
+                        }
+                    }
+
+
+                } else {
+                    response.setOutrasReceitas(response.outrasReceitas.add(lancamento.getValor()));
+                }
+
+            } else if (lancamento.getTipo() == TipoLancamentoEnum.DEPOSITO) {
+                response.setDepositos(response.depositos.add(lancamento.getValor()));
+            } else if (lancamento.getTipo() == TipoLancamentoEnum.DESPESA) {
+                response.setDespesas(response.despesas.add(lancamento.getValor()));
+            } else if (lancamento.getTipo() == TipoLancamentoEnum.SANGRIA) {
+                response.setSangrias(response.sangrias.add(lancamento.getValor()));
+            }
+        });
+
+        response.setSubtotalEntrada(response.produtos.add(response.servicos.add(response.outrasReceitas.add(response.depositos))));
+        response.setSubtotalSaida(response.sangrias.add(response.despesas));
+        response.setTotalVendas(response.produtos.add(response.produtos));
+        return response;
+
 
     }
 }
