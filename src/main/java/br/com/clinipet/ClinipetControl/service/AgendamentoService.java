@@ -8,14 +8,9 @@ import br.com.clinipet.ClinipetControl.model.repository.AgendamentoRepository;
 import br.com.clinipet.ClinipetControl.model.repository.LancamentoRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.time.DateUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -24,14 +19,6 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class AgendamentoService {
-
-    @Value("${horario_inicio}")
-    private String inicioHorarioEstabelecimento;
-
-    @Value("${horario_fim}")
-    private String fimHorarioEstabelecimento;
-
-
 
     private final AgendamentoRepository agendamentoRepository;
 
@@ -99,7 +86,7 @@ public class AgendamentoService {
 
     public void validarRemarcar(Agendamento agendamento) {
 
-         List<Agendamento> agendamentos = agendamentoRepository.findExistentAgendamentosByRangeRemarcar(agendamento.getDataInicio(),
+        List<Agendamento> agendamentos = agendamentoRepository.findExistentAgendamentosByRangeRemarcar(agendamento.getDataInicio(),
                 agendamento.getDataFim(), agendamento.getFuncionario().getId(), agendamento.getAnimal().getId(), agendamento.getId());
 
         Date dataInicio = DateUtils.addHours(agendamento.getDataInicio(), 3);
@@ -120,18 +107,5 @@ public class AgendamentoService {
             throw new RegraNegocioException("Selecione um serviço.");
         }
     }
-
-    public LocalDate convertToLocalDateViaMilisecond(Date dateToConvert) {
-        return Instant.ofEpochMilli(dateToConvert.getTime())
-                .atZone(ZoneId.of("America/Sao_Paulo"))
-                .toLocalDate();
-    }
-
-    public LocalDateTime convertToLocalDateTimeViaInstant(Date dateToConvert) {
-        return dateToConvert.toInstant()
-                .atZone(ZoneId.of("America/Sao_Paulo"))
-                .toLocalDateTime();
-    }
-
 
 }

@@ -89,7 +89,9 @@ public class LancamentoService {
     public BigDecimal obterSaldo() {
 
         BigDecimal receitas = lancamentoRepository.obterSaldoPorTipoLancamentoStatus(TipoLancamentoEnum.RECEITA, StatusLancamentoEnum.CONCLUIDO);
+        BigDecimal depositos = lancamentoRepository.obterSaldoPorTipoLancamentoStatus(TipoLancamentoEnum.DEPOSITO, StatusLancamentoEnum.CONCLUIDO);
         BigDecimal despesas = lancamentoRepository.obterSaldoPorTipoLancamentoStatus(TipoLancamentoEnum.DESPESA, StatusLancamentoEnum.CONCLUIDO);
+        BigDecimal sangrias = lancamentoRepository.obterSaldoPorTipoLancamentoStatus(TipoLancamentoEnum.SANGRIA, StatusLancamentoEnum.CONCLUIDO);
 
         if (receitas == null) {
             receitas = BigDecimal.ZERO;
@@ -99,7 +101,15 @@ public class LancamentoService {
             despesas = BigDecimal.ZERO;
         }
 
-        return receitas.subtract(despesas);
+        if (depositos == null) {
+            depositos = BigDecimal.ZERO;
+        }
+
+        if (sangrias == null) {
+            sangrias = BigDecimal.ZERO;
+        }
+
+        return receitas.add(depositos).subtract(despesas).subtract(sangrias);
     }
 
 
@@ -156,7 +166,7 @@ public class LancamentoService {
 
         response.setSubtotalEntrada(response.produtos.add(response.servicos.add(response.outrasReceitas.add(response.depositos))));
         response.setSubtotalSaida(response.sangrias.add(response.despesas));
-        response.setTotalVendas(response.produtos.add(response.produtos));
+        response.setTotalVendas(response.produtos.add(response.servicos));
         return response;
 
 
