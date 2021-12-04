@@ -72,6 +72,25 @@ public class LancamentoController {
                 new ResponseEntity("Lancamento não encontrado na base de Dados.", HttpStatus.BAD_REQUEST));
     }
 
+    @PutMapping("/{id}/atualiza-status-desmarca")
+    public ResponseEntity atualizarStatusDesmarcando(@PathVariable("id") Long id, @RequestBody StatusRequestDTO statusRequestDTO) {
+        return lancamentoService.obterPorId(id).map(entity -> {
+            StatusLancamentoEnum statusSelecionado = StatusLancamentoEnum.valueOf(statusRequestDTO.getStatus());
+            if (statusSelecionado == null) {
+                return ResponseEntity.badRequest().body("Não foi possível atualizar o status do lançamento, envie um status válido!");
+            }
+            try {
+                entity.setStatus(statusSelecionado);
+                lancamentoService.atualizarEDesmarcar(entity, entity.getIdAgendamento());
+                return ResponseEntity.ok(entity);
+            } catch (RegraNegocioException e) {
+                return ResponseEntity.badRequest().body(e.getMessage());
+            }
+
+        }).orElseGet(() ->
+                new ResponseEntity("Lancamento não encontrado na base de Dados.", HttpStatus.BAD_REQUEST));
+    }
+
 
     @GetMapping
     public ResponseEntity listar() {

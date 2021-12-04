@@ -2,6 +2,7 @@ package br.com.clinipet.ClinipetControl.service;
 
 import br.com.clinipet.ClinipetControl.controller.dto.response.ProdutoVendidoResponse;
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
+import br.com.clinipet.ClinipetControl.model.entity.ItemVenda;
 import br.com.clinipet.ClinipetControl.model.entity.Produto;
 import br.com.clinipet.ClinipetControl.model.enums.StatusEstoqueEnum;
 import br.com.clinipet.ClinipetControl.model.repository.ItemVendaRepository;
@@ -16,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -81,14 +84,22 @@ public class ProdutoService {
         List<ProdutoVendidoResponse> produtoVendidoResponseList = new ArrayList<>();
 
         listarProdutos().forEach(produto -> {
-            Integer quantidadeVendido = itemVendaRepository.findByProduto(produto).size();
-            ProdutoVendidoResponse produtoVendido = ProdutoVendidoResponse.builder()
-                    .produto(produto)
-                    .quantidade(quantidadeVendido.longValue())
-                    .valorTotal(produto.getValorItem() * quantidadeVendido)
-                    .build();
-            produtoVendidoResponseList.add(produtoVendido);
+            AtomicReference<Long> quantidade = new AtomicReference<>();
+            quantidade.set(0L);
 
+            List<ItemVenda> itemVendas = itemVendaRepository
+                    .findByProduto(produto).stream().filter(p -> p.getProduto().getAtivo()).collect(Collectors.toList());
+            itemVendas.forEach(itemVenda -> {
+                quantidade.updateAndGet(v -> v + itemVenda.getQuantidade());
+            });
+
+            if (!(quantidade.get() == 0L)) {
+                ProdutoVendidoResponse produtoVendidoResponse = ProdutoVendidoResponse.builder()
+                        .label(produto.getNome())
+                        .valorTotal(quantidade.get() * produto.getValorItem())
+                        .value(quantidade.get()).build();
+                produtoVendidoResponseList.add(produtoVendidoResponse);
+            }
         });
 
         return produtoVendidoResponseList;
@@ -96,7 +107,7 @@ public class ProdutoService {
 
 
     public List<Produto> listarProdutos() {
-        return produtoRepository.findAll();
+        return produtoRepository.findAllByAtivoTrue();
     }
 
 

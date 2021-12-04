@@ -13,4 +13,6 @@ import lombok.NoArgsConstructor;
 public class StatusRequestDTO {
 
     public String status;
+
+    public Long idAgendamento;
 }

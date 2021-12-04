@@ -3,6 +3,7 @@ package br.com.clinipet.ClinipetControl.service;
 
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Servico;
+import br.com.clinipet.ClinipetControl.model.entity.dao.ContagemServicoDAO;
 import br.com.clinipet.ClinipetControl.model.entity.dao.ServicoDAO;
 import br.com.clinipet.ClinipetControl.model.repository.ServicoRepository;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +43,7 @@ public class ServicoService {
     }
 
     public List<Servico> listarServicos() {
-        return servicoRepository.findAll();
+        return servicoRepository.findAllByAtivoTrue();
     }
 
     @Transactional
@@ -57,6 +58,12 @@ public class ServicoService {
             e.printStackTrace();
         }
     }
+
+    public List<ContagemServicoDAO> contagemServicoDAOS() {
+        List<ContagemServicoDAO> contagemServicosRealizados = servicoRepository.getContagemServicosRealizados();
+        return contagemServicosRealizados;
+    }
+
 
     public Optional<Servico> obterPorId(Long id) {
         return servicoRepository.findById(id);
@@ -79,7 +86,7 @@ public class ServicoService {
     public List<Map<String, Object>> listarNomes() {
 
         List<Map<String, Object>> listaNomes = new ArrayList<>();
-        servicoRepository.findAll().forEach(servico -> {
+        servicoRepository.findAllByAtivoTrue().forEach(servico -> {
             Map<String, Object> servicos = new HashMap<>();
             servicos.put("label", servico.getNome());
             servicos.put("value", servico.getId());

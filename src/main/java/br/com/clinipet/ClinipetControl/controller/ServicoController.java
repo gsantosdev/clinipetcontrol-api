@@ -3,6 +3,7 @@ package br.com.clinipet.ClinipetControl.controller;
 
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Servico;
+import br.com.clinipet.ClinipetControl.model.entity.dao.ContagemServicoDAO;
 import br.com.clinipet.ClinipetControl.service.ServicoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -117,6 +118,16 @@ public class ServicoController {
         return ResponseEntity.ok(listaNomes);
 
 
+    }
+
+    @GetMapping("/contagemServicos")
+    public ResponseEntity contagemServicos() {
+        List<ContagemServicoDAO> contagemServicoDAOS = servicoService.contagemServicoDAOS();
+
+        if (contagemServicoDAOS.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(contagemServicoDAOS);
     }
 
 }

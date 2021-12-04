@@ -32,8 +32,11 @@ public class ordemDeServicoDAO {
 
     private String cpf;
 
-    public ordemDeServicoDAO(Long id, String descricao, BigDecimal valor, StatusLancamentoEnum statusLancamentoEnum, Date dataExecucao, String nome, String cpf) {
+    private Long idAgendamento;
+
+    public ordemDeServicoDAO(Long id,  Long idAgendamento, String descricao, BigDecimal valor, StatusLancamentoEnum statusLancamentoEnum, Date dataExecucao, String nome, String cpf) {
         this.idLancamento = id;
+        this.idAgendamento = idAgendamento;
         this.descricao = descricao;
         this.valor = valor;
         this.dataExecucao = DateUtils.addHours(dataExecucao, 3);

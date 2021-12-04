@@ -13,6 +13,8 @@ import java.util.Date;
 @AllArgsConstructor
 public class AgendamentoRequestDTO {
 
+    private Long id;
+
     private Date dataHorario;
 
     private String observacoes;

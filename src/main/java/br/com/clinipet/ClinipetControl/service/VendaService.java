@@ -10,15 +10,12 @@ import br.com.clinipet.ClinipetControl.model.entity.ItemVenda;
 import br.com.clinipet.ClinipetControl.model.entity.Lancamento;
 import br.com.clinipet.ClinipetControl.model.entity.Produto;
 import br.com.clinipet.ClinipetControl.model.entity.Venda;
-import br.com.clinipet.ClinipetControl.model.entity.dao.LancamentoDAO;
 import br.com.clinipet.ClinipetControl.model.entity.dao.ordemDeServicoDAO;
 import br.com.clinipet.ClinipetControl.model.enums.StatusLancamentoEnum;
 import br.com.clinipet.ClinipetControl.model.enums.TipoLancamentoEnum;
 import br.com.clinipet.ClinipetControl.model.repository.VendaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
@@ -102,6 +99,9 @@ public class VendaService {
 
             Agendamento agendamento = agendamentoMapper.toEntity(itemVendaDTO.getAgendamento());
             Agendamento agendamentoSalvo = agendamentoService.marcar(agendamento);
+            if (itemVendaDTO.getAgendamento() != null) {
+                itemVendaDTO.getAgendamento().setId(agendamentoSalvo.getId());
+            }
 
             itemList.add(ItemVenda.builder().agendamento(agendamentoSalvo).quantidade(itemVendaDTO.getQuantidade()).build());
         });
@@ -123,6 +123,7 @@ public class VendaService {
                 .forEach(itemVendaDTO -> servicoService
                         .obterPorId(Objects.requireNonNull(itemVendaDTO.getAgendamento()).getIdServico())
                         .map(servico -> lancamentoService.salvar(Lancamento.builder()
+                                .idAgendamento(itemVendaDTO.getAgendamento().getId())
                                 .descricao(servico.getNome() + " - " + animalService.obterPorId(itemVendaDTO.getAgendamento()
                                         .getIdAnimal()).map(Animal::getNome).orElseThrow(() -> new RegraNegocioException("Animal não encontrado.")))
                                 .venda(venda).usuario(usuarioService.obterPorId(vendaDTO.getIdUsuario())
@@ -175,16 +176,10 @@ public class VendaService {
 
 
         ordensByCliente
-                .forEach(ordemDeServicoDAO -> ordemDeServicoDAO.setAgendamento(lancamentoService
-                        .obterPorId(ordemDeServicoDAO.getIdLancamento())
-                        .map(Lancamento::getVenda)
-                        .map(Venda::getItensVenda)
-                        .get()
-                        .stream()
-                        .findFirst()
-                        .map(ItemVenda::getAgendamento)
+                .forEach(ordemDeServicoDAO -> ordemDeServicoDAO.setAgendamento(agendamentoService
+                        .obterPorId(ordemDeServicoDAO.getIdAgendamento())
                         .map(agendamentoMapper::toDTO)
-                        .orElseThrow(() -> new RegraNegocioException("Falha ao achar o agendamento"))));
+                        .orElseThrow(() -> new RegraNegocioException("Falha ao encontrar agendamento!"))));
 
         return ordensByCliente;
 

@@ -14,9 +14,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ProdutoVendidoResponse {
 
-    public Produto produto;
+    public String label;
 
-    public Long quantidade;
+    public Long value;
 
     public Double valorTotal;
 }

@@ -67,7 +67,7 @@ public class ClienteService {
     }
 
     public List<Cliente> listarClientes() {
-        return clienteRepository.findAll();
+        return clienteRepository.findAllByAtivoTrue();
     }
 
 

@@ -57,6 +57,19 @@ public class LancamentoService {
     }
 
     @Transactional
+    public Lancamento atualizarEDesmarcar(Lancamento lancamento, Long idAgendamento) {
+        Objects.requireNonNull(lancamento.getIdLancamento());
+        if ((lancamento.getStatus() == StatusLancamentoEnum.CANCELADO || lancamento.getStatus() == StatusLancamentoEnum.AGUARDANDO_PAGAMENTO) && lancamento.getVenda().getTipo().equals("servico")) {
+            Agendamento agendamento = agendamentoService.obterPorId(idAgendamento).orElseThrow(() -> new RegraNegocioException("Agendamento não encontrado!"));
+
+            agendamentoService.desmarcar(agendamento);
+
+        }
+        validar(lancamento);
+        return lancamentoRepository.save(lancamento);
+    }
+
+    @Transactional
     public void deletar(Lancamento lancamento) {
         Objects.requireNonNull(lancamento.getIdLancamento());
         lancamentoRepository.delete(lancamento);

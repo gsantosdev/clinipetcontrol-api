@@ -75,4 +75,6 @@ public class Lancamento {
     @JoinColumn(name = "id_registro_caixa")
     private RegistroCaixa registroCaixa;
 
+    private Long idAgendamento;
+
 }

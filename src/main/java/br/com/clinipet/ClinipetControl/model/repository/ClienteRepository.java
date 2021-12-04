@@ -14,4 +14,7 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
     @Query(value = "SELECT * FROM Cliente WHERE ativo = true and nome LIKE CONCAT('%', :busca, '%') OR cpf LIKE CONCAT('%', :busca, '%') OR telefone LIKE CONCAT('%', :busca, '%')", nativeQuery = true)
     Optional<List<Cliente>> findByNomeOrTelefoneOrCpf(@Param("busca") String busca);
+
+
+    List<Cliente> findAllByAtivoTrue();
 }
