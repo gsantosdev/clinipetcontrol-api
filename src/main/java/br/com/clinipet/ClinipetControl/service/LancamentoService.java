@@ -5,6 +5,7 @@ import br.com.clinipet.ClinipetControl.controller.dto.response.FechamentoCaixaRe
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Agendamento;
 import br.com.clinipet.ClinipetControl.model.entity.Lancamento;
+import br.com.clinipet.ClinipetControl.model.entity.Produto;
 import br.com.clinipet.ClinipetControl.model.entity.dao.LancamentoDAO;
 import br.com.clinipet.ClinipetControl.model.enums.StatusLancamentoEnum;
 import br.com.clinipet.ClinipetControl.model.enums.TipoLancamentoEnum;
@@ -27,6 +28,8 @@ public class LancamentoService {
 
     private final AgendamentoService agendamentoService;
 
+    private final ProdutoService produtoService;
+
     @Transactional
     public Lancamento salvar(Lancamento lancamento) {
         validar(lancamento);
@@ -36,6 +39,7 @@ public class LancamentoService {
         if (lancamento.getStatus() == null) {
             lancamento.setStatus(StatusLancamentoEnum.PENDENTE);
         }
+
         return lancamentoRepository.save(lancamento);
     }
 
@@ -51,7 +55,17 @@ public class LancamentoService {
 
 
             agendamentoService.desmarcar(agendamento);
+        } else if ((lancamento.getStatus() == StatusLancamentoEnum.CONCLUIDO) && lancamento.getVenda().getTipo().equals("produto")) {
+            lancamento.getVenda().getItensVenda().forEach(itemVenda -> {
+
+                Produto produto = itemVenda.getProduto();
+
+
+                produtoService.baixaEstoque(produto.getId(), itemVenda.getQuantidade());
+
+            });
         }
+
         validar(lancamento);
         return lancamentoRepository.save(lancamento);
     }
@@ -142,6 +156,11 @@ public class LancamentoService {
 
         if (lancamento.getTipo() == null) {
             throw new RegraNegocioException("Informe um tipo de lançamento.");
+        }
+
+        if (lancamento.getTipo() == TipoLancamentoEnum.SANGRIA && (obterSaldo().compareTo(BigDecimal.ZERO) <= 0 || obterSaldo().subtract(lancamento.getValor()).compareTo(BigDecimal.ZERO) < 0)) {
+            throw new RegraNegocioException("Impossível realizar sangria!");
+
         }
 
     }

@@ -69,7 +69,7 @@ public class LancamentoController {
             }
 
         }).orElseGet(() ->
-                new ResponseEntity("Lancamento não encontrado na base de Dados.", HttpStatus.BAD_REQUEST));
+                new ResponseEntity("Lancamento não encontrado na base de dados.", HttpStatus.BAD_REQUEST));
     }
 
     @PutMapping("/{id}/atualiza-status-desmarca")

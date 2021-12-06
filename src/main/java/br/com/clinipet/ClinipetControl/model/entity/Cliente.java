@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.SQLDelete;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.CascadeType;
@@ -67,8 +68,8 @@ public class Cliente {
     @Builder.Default
     private Boolean ativo = true;
 
-
-    //private Boolean ativo;
+    @CreatedDate
+    private Date dataCadastro;
 
     @ToString.Exclude
     @JsonBackReference

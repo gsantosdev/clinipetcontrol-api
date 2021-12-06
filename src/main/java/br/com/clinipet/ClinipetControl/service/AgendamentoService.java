@@ -56,7 +56,7 @@ public class AgendamentoService {
     }
 
     public List<Agendamento> obterTodos() {
-        return agendamentoRepository.findAllByAtivoTrue();
+        return agendamentoRepository.findAll();
     }
 
 

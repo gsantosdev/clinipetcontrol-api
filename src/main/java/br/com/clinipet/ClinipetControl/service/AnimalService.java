@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -25,6 +26,8 @@ public class AnimalService {
     @Transactional
     public Animal cadastrarAnimal(Animal animal) {
         validar(animal);
+        animal.setDataCadastro(Date.from(Instant.now()));
+
         return repository.save(animal);
     }
 

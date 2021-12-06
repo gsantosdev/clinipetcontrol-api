@@ -64,13 +64,24 @@ public class Produto {
     public void baixaEstoque(Long quantidade) {
 
         if (quantidadeEstoque == 0) {
-            throw new RegraNegocioException("Estoque do produto já esgotado!");
+            throw new RegraNegocioException("Estoque do produto " + this.nome + " já esgotado!");
         }
         if (quantidadeEstoque - quantidade < 0) {
-            throw new RegraNegocioException("A quantidade em estoque não pode ser menor do que 0!");
+            throw new RegraNegocioException("A quantidade em estoque de " + this.nome + " não pode ser menor do que 0!");
         }
+
         quantidadeEstoque -= quantidade;
     }
+
+    public void verificarBaixa(Long quantidade) {
+        if (quantidadeEstoque == 0) {
+            throw new RegraNegocioException("Estoque do produto " + this.nome + " já esgotado!");
+        }
+        if (quantidadeEstoque - quantidade < 0) {
+            throw new RegraNegocioException("A quantidade em estoque de " + this.nome + " não pode ser menor do que 0!");
+        }
+    }
+
 
     public void entradaEstoque(Long quantidade) {
         quantidadeEstoque += quantidade;

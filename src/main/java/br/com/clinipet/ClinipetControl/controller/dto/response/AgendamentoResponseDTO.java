@@ -31,4 +31,6 @@ public class AgendamentoResponseDTO {
 
     private String telefoneProprietario;
 
+    private Boolean ativo;
+
 }

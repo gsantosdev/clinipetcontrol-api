@@ -91,6 +91,7 @@ public class AgendamentoController {
                 .nomeProprietario(agendamento.getAnimal().getCliente().getNome())
                 .nomeServico(agendamento.getServico().getNome())
                 .telefoneProprietario(agendamento.getAnimal().getCliente().getTelefone())
+                .ativo(agendamento.getAtivo())
                 .build())));
 
         if (agendamentos.isEmpty()) {

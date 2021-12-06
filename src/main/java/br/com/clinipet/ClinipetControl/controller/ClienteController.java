@@ -1,8 +1,8 @@
 package br.com.clinipet.ClinipetControl.controller;
 
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
-import br.com.clinipet.ClinipetControl.model.entity.Animal;
 import br.com.clinipet.ClinipetControl.model.entity.Cliente;
+import br.com.clinipet.ClinipetControl.model.entity.dao.ClienteTipoDAO;
 import br.com.clinipet.ClinipetControl.service.ClienteService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
@@ -59,7 +59,7 @@ public class ClienteController {
     @GetMapping
     public ResponseEntity obterPorNomeTelefoneCpf(@RequestParam String busca) {
 
-        if(busca == null || busca.equals(Strings.EMPTY) ){
+        if (busca == null || busca.equals(Strings.EMPTY)) {
             return ResponseEntity.badRequest().body("A busca não pode estar vazia");
         }
 
@@ -75,6 +75,16 @@ public class ClienteController {
     @GetMapping("/listar")
     public ResponseEntity listarClientes() {
         List<Cliente> clientes = clienteService.listarClientes();
+        if (clientes.isEmpty()) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(clientes);
+
+    }
+
+    @GetMapping("/relatorioHome")
+    public ResponseEntity relatorioPfPj() {
+        List<ClienteTipoDAO> clientes = clienteService.relatorioPfPj();
         if (clientes.isEmpty()) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }

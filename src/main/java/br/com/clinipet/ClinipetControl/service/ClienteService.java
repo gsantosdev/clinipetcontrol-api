@@ -4,12 +4,14 @@ package br.com.clinipet.ClinipetControl.service;
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Animal;
 import br.com.clinipet.ClinipetControl.model.entity.Cliente;
+import br.com.clinipet.ClinipetControl.model.entity.dao.ClienteTipoDAO;
 import br.com.clinipet.ClinipetControl.model.repository.ClienteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -29,6 +31,7 @@ public class ClienteService {
     @Transactional
     public Cliente cadastrar(Cliente cliente) {
         validar(cliente);
+        cliente.setDataCadastro(Date.from(Instant.now()));
         try {
             return clienteRepository.save(cliente);
         } catch (Exception e) {
@@ -105,6 +108,10 @@ public class ClienteService {
             }
             e.printStackTrace();
         }
+    }
+
+    public List<ClienteTipoDAO> relatorioPfPj() {
+        return clienteRepository.relatorioPfPj();
     }
 
     public void validar(Cliente cliente) {

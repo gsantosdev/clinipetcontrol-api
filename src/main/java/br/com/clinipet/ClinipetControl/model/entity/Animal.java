@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.SQLDelete;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.Entity;
@@ -60,6 +61,9 @@ public class Animal {
 
     @Nullable
     private String medicamentos;
+
+    @CreatedDate
+    private Date dataCadastro;
 
 
     @JsonIgnoreProperties("animal")
