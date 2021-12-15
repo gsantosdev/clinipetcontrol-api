@@ -46,25 +46,28 @@ public class LancamentoService {
     @Transactional
     public Lancamento atualizar(Lancamento lancamento) {
         Objects.requireNonNull(lancamento.getIdLancamento());
-        if ((lancamento.getStatus() == StatusLancamentoEnum.CANCELADO || lancamento.getStatus() == StatusLancamentoEnum.AGUARDANDO_PAGAMENTO) && lancamento.getVenda().getTipo().equals("servico")) {
-            Agendamento agendamento = lancamento.getVenda()
-                    .getItensVenda()
-                    .stream()
-                    .findFirst()
-                    .map(itemVenda -> itemVenda.getAgendamento()).orElseThrow(() -> new RegraNegocioException("Agendamento não encontrado"));
+        if (lancamento.getVenda() != null) {
+            if ((lancamento.getStatus() == StatusLancamentoEnum.CANCELADO || lancamento.getStatus() == StatusLancamentoEnum.AGUARDANDO_PAGAMENTO) && lancamento.getVenda().getTipo().equals("servico")) {
+                Agendamento agendamento = lancamento.getVenda()
+                        .getItensVenda()
+                        .stream()
+                        .findFirst()
+                        .map(itemVenda -> itemVenda.getAgendamento()).orElseThrow(() -> new RegraNegocioException("Agendamento não encontrado"));
 
 
-            agendamentoService.desmarcar(agendamento);
-        } else if ((lancamento.getStatus() == StatusLancamentoEnum.CONCLUIDO) && lancamento.getVenda().getTipo().equals("produto")) {
-            lancamento.getVenda().getItensVenda().forEach(itemVenda -> {
+                agendamentoService.desmarcar(agendamento);
+            } else if ((lancamento.getStatus() == StatusLancamentoEnum.CONCLUIDO) && lancamento.getVenda().getTipo().equals("produto")) {
+                lancamento.getVenda().getItensVenda().forEach(itemVenda -> {
 
-                Produto produto = itemVenda.getProduto();
+                    Produto produto = itemVenda.getProduto();
 
 
-                produtoService.baixaEstoque(produto.getId(), itemVenda.getQuantidade());
+                    produtoService.baixaEstoque(produto.getId(), itemVenda.getQuantidade());
 
-            });
+                });
+            }
         }
+
 
         validar(lancamento);
         return lancamentoRepository.save(lancamento);

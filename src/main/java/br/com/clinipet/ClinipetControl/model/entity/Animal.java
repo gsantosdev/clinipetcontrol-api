@@ -41,7 +41,6 @@ public class Animal {
     @Builder.Default
     private Boolean ativo = true;
 
-
     @JsonFormat(pattern = "dd/MM/yyyy")
     private Date dataNascimento;
 
@@ -65,11 +64,9 @@ public class Animal {
     @CreatedDate
     private Date dataCadastro;
 
-
     @JsonIgnoreProperties("animal")
     @ManyToOne
     @JoinColumn(name = "idCliente")
     private Cliente cliente;
-
 
 }

@@ -28,5 +28,4 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
                                                               @Param("idAnimal") Long idAnimal,
                                                               @Param("idAgendamento") Long idAgendamento);
 
-    List<Agendamento> findAllByAtivoTrue();
 }
