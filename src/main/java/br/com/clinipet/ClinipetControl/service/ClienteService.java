@@ -4,6 +4,7 @@ package br.com.clinipet.ClinipetControl.service;
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Animal;
 import br.com.clinipet.ClinipetControl.model.entity.Cliente;
+import br.com.clinipet.ClinipetControl.model.entity.dao.ClienteQuantidadeAnimalDAO;
 import br.com.clinipet.ClinipetControl.model.entity.dao.ClienteTipoDAO;
 import br.com.clinipet.ClinipetControl.model.repository.ClienteRepository;
 import lombok.RequiredArgsConstructor;
@@ -71,6 +72,22 @@ public class ClienteService {
 
     public List<Cliente> listarClientes() {
         return clienteRepository.findAllByAtivoTrue();
+    }
+
+    public List<ClienteQuantidadeAnimalDAO> listarClientesQuantidadeDeAnimais() {
+
+        List<ClienteQuantidadeAnimalDAO> clienteQuantidadeAnimalDAO = new ArrayList<>();
+
+        clienteRepository.findAllByAtivoTrue().forEach(cliente ->
+                {
+                    ClienteQuantidadeAnimalDAO clienteAnimalQuantidade = new ClienteQuantidadeAnimalDAO();
+                    clienteAnimalQuantidade.setLabel(cliente.getNome());
+                    clienteAnimalQuantidade.setValue((long) cliente.getAnimais().size());
+                    clienteQuantidadeAnimalDAO.add(clienteAnimalQuantidade);
+                }
+
+        );
+        return clienteQuantidadeAnimalDAO;
     }
 
 

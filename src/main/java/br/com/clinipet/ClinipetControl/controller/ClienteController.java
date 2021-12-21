@@ -2,6 +2,7 @@ package br.com.clinipet.ClinipetControl.controller;
 
 import br.com.clinipet.ClinipetControl.exception.RegraNegocioException;
 import br.com.clinipet.ClinipetControl.model.entity.Cliente;
+import br.com.clinipet.ClinipetControl.model.entity.dao.ClienteQuantidadeAnimalDAO;
 import br.com.clinipet.ClinipetControl.model.entity.dao.ClienteTipoDAO;
 import br.com.clinipet.ClinipetControl.service.ClienteService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -89,6 +91,17 @@ public class ClienteController {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(clientes);
+
+    }
+
+    @GetMapping("/relatorioQuantidadeAnimal")
+    public ResponseEntity relatorioQuantidadeAnimal() {
+        List<ClienteQuantidadeAnimalDAO> clienteQuantidadeAnimalDAOS = clienteService.listarClientesQuantidadeDeAnimais();
+        clienteQuantidadeAnimalDAOS.sort(Comparator.comparing(ClienteQuantidadeAnimalDAO::getValue).reversed());
+        if (clienteQuantidadeAnimalDAOS.isEmpty()) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(clienteQuantidadeAnimalDAOS);
 
     }
 

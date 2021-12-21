@@ -8,6 +8,7 @@ import br.com.clinipet.ClinipetControl.model.repository.AgendamentoRepository;
 import br.com.clinipet.ClinipetControl.model.repository.LancamentoRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.time.DateUtils;
+import org.joda.time.LocalTime;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -23,6 +24,8 @@ public class AgendamentoService {
     private final AgendamentoRepository agendamentoRepository;
 
     private final LancamentoRepository lancamentoRepository;
+
+    private final ConfigService configService;
 
     @Transactional
     public Agendamento marcar(Agendamento agendamento) {
@@ -67,7 +70,25 @@ public class AgendamentoService {
 
         Date dataInicio = DateUtils.addHours(agendamento.getDataInicio(), 3);
 
-        if (!agendamentos.isEmpty()) {
+        Date dataFim = DateUtils.addHours(agendamento.getDataFim(), 3);
+
+        var horaInicioAgendamento = dataInicio.getHours();
+        var minutoInicioAgendamento = dataInicio.getMinutes();
+
+        var horaFimAgendamento = dataFim.getHours();
+        var minutoFimAgendamento = dataFim.getMinutes();
+
+
+        int horaConfigInicio = Integer.parseInt(configService.get().getHorarioInicio().split(":")[0]);
+        int minutosConfigInicio = Integer.parseInt(configService.get().getHorarioInicio().split(":")[1]);
+
+        int horaConfigFim = Integer.parseInt(configService.get().getHorarioFim().split(":")[0]);
+        int minutosConfigFim = Integer.parseInt(configService.get().getHorarioFim().split(":")[1]);
+
+        if (!compareTime(horaConfigInicio, minutosConfigInicio, horaConfigFim, minutosConfigFim, horaInicioAgendamento, minutoInicioAgendamento, horaFimAgendamento, minutoFimAgendamento)) {
+            throw new AgendamentoException("Agendamento fora do horário de funcionamento.");
+
+        } else if (!agendamentos.isEmpty()) {
             throw new AgendamentoException("O funcionário(a) ou o animal já possui um agendamento no mesmo horário.");
         }
         if (dataInicio.compareTo(new Date(System.currentTimeMillis())) < 0) {
@@ -91,7 +112,26 @@ public class AgendamentoService {
 
         Date dataInicio = DateUtils.addHours(agendamento.getDataInicio(), 3);
 
-        if (!agendamentos.isEmpty()) {
+        Date dataFim = DateUtils.addHours(agendamento.getDataFim(), 3);
+
+        var horaInicioAgendamento = dataInicio.getHours();
+        var minutoInicioAgendamento = dataInicio.getMinutes();
+
+        var horaFimAgendamento = dataFim.getHours();
+        var minutoFimAgendamento = dataFim.getMinutes();
+
+
+        int horaConfigInicio = Integer.parseInt(configService.get().getHorarioInicio().split(":")[0]);
+        int minutosConfigInicio = Integer.parseInt(configService.get().getHorarioInicio().split(":")[1]);
+
+        int horaConfigFim = Integer.parseInt(configService.get().getHorarioFim().split(":")[0]);
+        int minutosConfigFim = Integer.parseInt(configService.get().getHorarioFim().split(":")[1]);
+
+
+        if (!compareTime(horaConfigInicio, minutosConfigInicio, horaConfigFim, minutosConfigFim, horaInicioAgendamento, minutoInicioAgendamento, horaFimAgendamento, minutoFimAgendamento)) {
+            throw new AgendamentoException("Agendamento fora do horário de funcionamento.");
+
+        } else if (!agendamentos.isEmpty()) {
             throw new AgendamentoException("O funcionário(a) ou o animal já possui um agendamento no mesmo horário.");
         }
         if (dataInicio.compareTo(new Date(System.currentTimeMillis())) < 0) {
@@ -106,6 +146,18 @@ public class AgendamentoService {
         if (agendamento.getServico() == null) {
             throw new RegraNegocioException("Selecione um serviço.");
         }
+    }
+
+    public static boolean compareTime(int hei, int mei, int hef, int mef, int hia, int mia, int hfa, int mfa) {
+        final LocalTime horarioEstabInicio = new LocalTime(hei, mei);
+        final LocalTime horarioEstabFim = new LocalTime(hef, mef);
+
+        final LocalTime horarioInicioAgendamento = new LocalTime(hia, mia);
+        final LocalTime horarioFimAgendamento = new LocalTime(hfa, mfa);
+
+        return !horarioInicioAgendamento.isBefore(horarioEstabInicio) && !horarioFimAgendamento.isAfter(horarioEstabFim) &&
+                horarioInicioAgendamento.isBefore(horarioFimAgendamento) && horarioFimAgendamento.isAfter(horarioInicioAgendamento);
+
     }
 
 }

@@ -16,4 +16,6 @@ public interface AnimalRepository extends JpaRepository<Animal, Long> {
     Optional<List<Animal>> findByNome(@Param("busca") String busca);
 
 
+
+
 }
