@@ -8,6 +8,7 @@ import br.com.clinipet.ClinipetControl.model.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -23,13 +24,13 @@ public class UsuarioService {
     private final UsuarioRepository repository;
 
     public Usuario autenticar(String nome, String senha) {
-        Optional<Usuario> usuario = repository.findByNome(nome);
+        Optional<Usuario> usuario = repository.findByNomeAndAtivoTrue(nome);
 
         if (usuario.isEmpty()) {
             throw new ErroAutenticacao("Usuario não encontrado com o nome informado!");
         }
 
-        if (!usuario.get().getSenha().equals(senha)) {
+        if (!matches(senha, usuario.get().getSenha())) {
             throw new ErroAutenticacao("Senha inválida.");
         }
 
@@ -40,6 +41,7 @@ public class UsuarioService {
     @Transactional
     public Usuario cadastrar(Usuario usuario) {
         validar(usuario);
+        usuario.setSenha(encode(usuario.getSenha()));
         return repository.save(usuario);
     }
 
@@ -47,6 +49,7 @@ public class UsuarioService {
     public Usuario atualizar(Usuario usuario) {
         Objects.requireNonNull(usuario);
         validar(usuario);
+        usuario.setSenha(encode(usuario.getSenha()));
         return repository.save(usuario);
     }
 
@@ -57,7 +60,7 @@ public class UsuarioService {
     }
 
     public List<Usuario> obterTodosPorNome(String nome) {
-        return repository.findAllByNome(nome);
+        return repository.findAllByNomeAndAtivoTrue(nome);
     }
 
 
@@ -83,23 +86,29 @@ public class UsuarioService {
 
     public void validar(Usuario usuario) {
 
-
         if (usuario.getNome() == null || usuario.getNome().trim().equals("")) {
             throw new RegraNegocioException("Informe um nome válido.");
         }
-
-        if (usuario.getId() == null && !repository.findAllByNome(usuario.getNome()).isEmpty()) {
+        if (usuario.getId() == null && !repository.findAllByNomeAndAtivoTrue(usuario.getNome()).isEmpty()) {
             throw new RegraNegocioException("Já existe um usuário cadastrado com este nome.");
 
         }
-
-        if (!repository.findEqualNomes(usuario.getNome(), usuario.getId()).isEmpty()) {
+        if (!repository.findEqualNomesAndAtivoTrue(usuario.getNome(), usuario.getId()).isEmpty()) {
             throw new RegraNegocioException("Já existe um usuário cadastrado com este nome.");
         }
-
         if (usuario.getTipo() == null) {
             throw new RegraNegocioException("Informe um tipo válido.");
         }
 
+    }
+
+    public String encode(String senha) {
+        StandardPasswordEncoder encoder = new StandardPasswordEncoder("secret");
+        return encoder.encode(senha);
+    }
+
+    public boolean matches(String senha, String senhaArmazenada) {
+        StandardPasswordEncoder encoder = new StandardPasswordEncoder("secret");
+        return encoder.matches(senha, senhaArmazenada);
     }
 }

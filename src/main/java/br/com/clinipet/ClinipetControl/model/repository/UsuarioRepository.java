@@ -15,14 +15,14 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
 
     //QUERY METHODS
-    Optional<Usuario> findByNome(String nome);
+    Optional<Usuario> findByNomeAndAtivoTrue(String nome);
 
 
-    @Query(value = "FROM Usuario u WHERE u.nome like %:busca%")
-    List<Usuario> findAllByNome(@Param("busca") String busca);
+    @Query(value = "FROM Usuario u WHERE u.nome like %:busca% and u.ativo = true")
+    List<Usuario> findAllByNomeAndAtivoTrue(@Param("busca") String busca);
 
 
-    @Query(value = "SELECT * FROM Usuario WHERE nome = :busca AND id <> :id", nativeQuery = true)
-    List<Usuario> findEqualNomes(@Param("busca") String busca, @Nullable @Param("id") Long id);
+    @Query(value = "SELECT * FROM Usuario WHERE nome = :busca and u.ativo = true AND id <> :id", nativeQuery = true)
+    List<Usuario> findEqualNomesAndAtivoTrue(@Param("busca") String busca, @Nullable @Param("id") Long id);
 
 }
