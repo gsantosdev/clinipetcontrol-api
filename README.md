@@ -1,2 +1,2 @@
 # clinipetcontrol-api
-API para um sistema de gerenciamento de clínica veterinária.
+API for a veterinary clinic management system.
